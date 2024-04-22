@@ -1,6 +1,6 @@
 Require Import Coq.Arith.PeanoNat.
-Require Import Coq.Arith.Max.
 Require Import Coq.Arith.Arith.
+Require Import Coq.Arith.Arith_base.
 Require Import Coq.Bool.Bool.
 
 Class Magma (A : Type) := {
@@ -265,18 +265,33 @@ Proof.
       reflexivity.
 Qed.
 
+Theorem le_lt_or_eq_stt : forall n m : nat, n <= m -> n < m \/ n = m.
+Proof.
+  exact (fun n m : nat => proj1 (Nat.lt_eq_cases n m)).
+Qed.
+
+Theorem lt_n_S_stt : forall n m : nat, n < m -> S n < S m.
+Proof.
+  exact (fun n m : nat => proj1 (Nat.succ_lt_mono n m)).
+Qed.
+
 Lemma le_S_S : forall n m : nat, n <= m -> S n <= S m.
 Proof.
   intros n m H.
-  apply Lt.le_lt_or_eq_stt in H.
+  apply le_lt_or_eq_stt in H.
   destruct H.
-  - apply Arith_prebase.lt_n_S_stt in H.
+  - apply lt_n_S_stt in H.
     apply Nat.lt_le_incl in H.
     apply H.
   - rewrite H.
     apply (Nat.le_lteq (S m) (S m)).
     right.
     reflexivity.
+Qed.
+
+Theorem le_trans : forall n m p, n <= m -> m <= p -> n <= p.
+Proof.
+  induction 2; auto.
 Qed.
 
 Theorem min_two_gt_two : forall x y z n n0 : nat,
