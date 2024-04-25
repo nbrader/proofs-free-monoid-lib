@@ -58,28 +58,33 @@ Qed.
 Lemma extend_monoid_unique (f : Basis -> A) (g : FreeMonoid -> A) :
   (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend_monoid f y.
 Proof.
-  intros. unfold extend_monoid.
-  induction y as [|b bs IH].
-  - simpl.
-    (* To address the base case directly: We expect that g [] should behave as mn_id,
-       given g should ideally act as a monoid homomorphism if extended from f. *)
-    assert (g [] = mn_id) as Gnil.
-    {
-      (* Proof that g [] = mn_id might depend on the definition or properties of g 
-         that are consistent with monoid homomorphism. *)
-      admit.  (* Assuming or proving g [] = mn_id based on other properties of g not detailed here. *)
+  unfold extend_monoid.
+  intros.
+  induction y as [|b bs IHbs].
+  - (* Base case for the empty list *)
+    unfold extend_monoid. simpl.
+    assert (H_mn_id: g [] = mn_id).
+    { 
+      specialize (extend_monoid_homomorphism f) as H_hom.
+      destruct H_hom as [H_mop H_mn].
+      rewrite <- H_mn.
+      admit.
     }
-    rewrite Gnil. reflexivity.
-
-  - simpl. 
-    (* Use the induction hypothesis *)
-    admit.
-(*     rewrite IH. 
-    (* Apply the hypothesis H for the head of the list *)
-    specialize (H b). simpl in H. rewrite <- H. 
-    clear H. induction bs as [|b' bs' IH'].
-    + simpl. apply mn_right_id.
-    + simpl in *. rewrite <- mn_assoc. f_equal. apply IH'. *)
+    exact H_mn_id.
+  - (* Inductive step for non-empty lists *)
+    simpl.
+    specialize (H2 b).  (* Utilize the fact that g (canonical_inj b) = f b *)
+    rewrite <- H2.
+    assert (H_cons: g (b :: bs) = m_op (g [b]) (g bs)).
+    {
+      (* Utilize the homomorphism properties of g, which must hold if g is a monoid homomorphism *)
+      specialize (extend_monoid_homomorphism f) as H_hom.
+      destruct H_hom as [H_mop H_mn].
+      admit.
+    }
+    rewrite H_cons.
+    f_equal.
+    + apply IHbs.
 Admitted.
 
 End UniversalPropertyProof.
@@ -90,7 +95,3 @@ Instance FreeMonoid_UniversalProperty {A : Type} `{Monoid A} : UniversalProperty
     extend_mor := @extend_monoid_homomorphism A _ _ _;
     extend_unique := @extend_monoid_unique A _ _ _
   }.
-
-
-
-
