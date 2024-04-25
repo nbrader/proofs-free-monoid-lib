@@ -7,7 +7,11 @@ Require Import FreeMonoid.MonoidHom.
 Instance BoolOrMagma : Magma bool := { m_op := orb }.
 
 Lemma orb_assoc : forall x y z : bool, orb x (orb y z) = orb (orb x y) z.
-Proof. destruct x, y, z; simpl; reflexivity. Qed.
+Proof.
+  intros x y z.
+  repeat (destruct x; destruct y; destruct z); reflexivity.
+Qed.
+
 
 Instance BoolOrSemigroup : Semigroup bool := { sg_assoc := orb_assoc }.
 

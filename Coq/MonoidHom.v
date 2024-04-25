@@ -9,5 +9,4 @@ Class MonoidHomomorphism {A B : Type} `{Monoid A} `{Monoid B} (f : A -> B) := {
   homo_preserves_id : f (mn_id) = mn_id;
 }.
 
-
 End MonoidHomomorphisms.
