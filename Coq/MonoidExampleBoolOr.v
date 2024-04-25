@@ -12,7 +12,6 @@ Proof.
   repeat (destruct x; destruct y; destruct z); reflexivity.
 Qed.
 
-
 Instance BoolOrSemigroup : Semigroup bool := { sg_assoc := orb_assoc }.
 
 Lemma orb_left_id : forall x : bool, orb false x = x.
