@@ -31,7 +31,8 @@ Definition canonical_inj (b : Basis) : FreeMonoid := [b].
 Class UniversalProperty (A : Type) `{Monoid A} := {
   extend : (Basis -> A) -> (FreeMonoid -> A);
   extend_mor : forall (f : Basis -> A), MonoidHomomorphism (extend f);
-  extend_unique : forall (f : Basis -> A) (g : FreeMonoid -> A), 
+  extend_unique : forall (f : Basis -> A) (g : FreeMonoid -> A),
+                    MonoidHomomorphism g ->
                     (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend f y
 }.
 
@@ -56,7 +57,7 @@ Proof.
 Qed.
 
 (* Proof that extend_monoid is the unique such extension *)
-Lemma extend_monoid_unique (f : Basis -> A) (g : FreeMonoid -> A) :
+Lemma extend_monoid_unique (f : Basis -> A) (g : FreeMonoid -> A) (gHom : MonoidHomomorphism g) :
   (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend_monoid f y.
 Proof.
   unfold extend_monoid.
@@ -66,10 +67,8 @@ Proof.
     unfold extend_monoid. simpl.
     assert (H_mn_id: g [] = mn_id).
     { 
-      specialize (extend_monoid_homomorphism f) as H_hom.
-      destruct H_hom as [H_mop H_mn].
-      rewrite <- H_mn.
-      admit.
+      destruct gHom.
+      apply homo_preserves_id.
     }
     exact H_mn_id.
   - (* Inductive step for non-empty lists *)
@@ -78,15 +77,14 @@ Proof.
     rewrite <- H.
     assert (H_cons: g (b :: bs) = m_op (g [b]) (g bs)).
     {
-      (* Utilize the homomorphism properties of g, which must hold if g is a monoid homomorphism *)
-      specialize (extend_monoid_homomorphism f) as H_hom.
-      destruct H_hom as [H_mop H_mn].
-      admit.
+      destruct gHom.
+      rewrite <- homo_preserves_op.
+      - f_equal.
     }
     rewrite H_cons.
     f_equal.
     + apply IHbs.
-Admitted.
+Qed.
 
 End UniversalPropertyProof.
 
@@ -94,5 +92,7 @@ Instance FreeMonoid_UniversalProperty {A : Type} `{Monoid A} : UniversalProperty
   {
     extend := fun f => @extend_monoid A _ _ _ f;
     extend_mor := @extend_monoid_homomorphism A _ _ _;
-    extend_unique := @extend_monoid_unique A _ _ _
+    extend_unique := fun (f : Basis -> A) (g : FreeMonoid -> A) (Hg : MonoidHomomorphism g)
+                      (H : forall x, g (canonical_inj x) = f x) => 
+                     @extend_monoid_unique A _ _ _ _ g Hg H
   }.
