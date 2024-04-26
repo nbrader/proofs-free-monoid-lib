@@ -4,6 +4,7 @@ Require Import FreeMonoid.StructMagma.
 Require Import FreeMonoid.StructSemigroup.
 Require Import FreeMonoid.StructMonoid.
 Require Import FreeMonoid.MonoidHom.
+Require Import Coq.Arith.Mult.
 
 Variable Basis : Type.
 
@@ -37,7 +38,7 @@ Class UniversalProperty (A : Type) `{Monoid A} := {
 
 Section UniversalPropertyProof.
 
-Context {A : Type} `{Monoid A}.
+Context {A : Type} (Hmagma : Magma A) (Hsemigroup : Semigroup A) (Hmonoid : Monoid A).
 
 (* Extends a function f : Basis -> A to a function FreeMonoid -> A *)
 Definition extend_monoid (f : Basis -> A) : FreeMonoid -> A :=
@@ -73,8 +74,8 @@ Proof.
     exact H_mn_id.
   - (* Inductive step for non-empty lists *)
     simpl.
-    specialize (H2 b).  (* Utilize the fact that g (canonical_inj b) = f b *)
-    rewrite <- H2.
+    specialize (H b).  (* Utilize the fact that g (canonical_inj b) = f b *)
+    rewrite <- H.
     assert (H_cons: g (b :: bs) = m_op (g [b]) (g bs)).
     {
       (* Utilize the homomorphism properties of g, which must hold if g is a monoid homomorphism *)
