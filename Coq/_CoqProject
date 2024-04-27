@@ -7,3 +7,6 @@ MonoidFree.v
 MonoidExampleNatMax1.v
 MonoidExampleBoolOr.v
 HomExampleBoolOrToNatMax1.v
+Category.v
+TypeCategory.v
+ExtraLemmas.v
