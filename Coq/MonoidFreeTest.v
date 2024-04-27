@@ -36,3 +36,23 @@ Proof.
   rewrite !Nat.add_assoc.  (* Use associativity of addition to simplify the nested additions *)
   ring.
 Qed.
+
+
+Axiom b0 : MonoidFree.Basis.
+Axiom b1 : MonoidFree.Basis.
+Axiom b2 : MonoidFree.Basis.
+Axiom b3 : MonoidFree.Basis.
+Axiom basis_b0 : Basis_to_nat b0 = 0.
+Axiom basis_b1 : Basis_to_nat b1 = 1.
+Axiom basis_b2 : Basis_to_nat b2 = 2.
+Axiom basis_b3 : Basis_to_nat b3 = 3.
+
+Theorem example_theorem : (MonoidFree.extend example_function) [b0; b1; b2] = 2*(0+1+2).
+Proof.
+  rewrite lifted_function_correct.
+  rewrite basis_b0.
+  rewrite basis_b1.
+  rewrite basis_b2.
+  simpl.
+  reflexivity.
+Qed.
