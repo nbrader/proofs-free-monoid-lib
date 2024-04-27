@@ -17,13 +17,13 @@ Instance FreeMonoid_Magma : Magma FreeMonoid := {
 }.
 
 Instance FreeMonoid_Semigroup : Semigroup FreeMonoid := {
-  sg_assoc := fun x y z => app_assoc x y z  (* Correctly applying associativity of list concatenation *)
+  sg_assoc := fun x y z => app_assoc x y z  (* Applying associativity of list concatenation *)
 }.
 
 Instance FreeMonoid_Monoid : Monoid FreeMonoid := {
   mn_id := [];
   mn_left_id := fun x => eq_refl : m_op [] x = x;  (* This works because [] ++ x is textually x in Coq's list concatenation *)
-  mn_right_id := fun x => app_nil_r x   (* Correctly applying the lemma for list concatenation *)
+  mn_right_id := fun x => app_nil_r x   (* Applying the lemma for list concatenation *)
 }.
 
 Definition canonical_inj (b : Basis) : FreeMonoid := [b].
