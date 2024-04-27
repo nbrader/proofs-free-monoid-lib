@@ -33,7 +33,7 @@ Class UniversalProperty (B : Type) `{Monoid B} := {
   (*  (Mon)          (Set)
                    i
        A         X ⟶ U(A)
-       ↓           ↘   ↓ U(f)
+       ↓ f         ↘   ↓ U(f)
        B          g   U(B)
       
       Please note: The forgetful functor U is left implicit in the code.
