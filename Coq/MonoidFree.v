@@ -28,8 +28,13 @@ Instance FreeMonoid_Monoid : Monoid FreeMonoid := {
 
 Definition canonical_inj (b : Basis) : FreeMonoid := [b].
 
+
 Class UniversalProperty (B : Type) `{Monoid B} := {
-  (* Comments use the names given in the diagram "Free-object-universal-property.png"*)
+  (*            i
+      A      X ⟶ U(A)
+      ↓        ↘   ↓ U(f)
+      B       g   U(B)
+  *)
   
   (* extend : (X -> B) -> (A -> B); *)
   extend : (Basis -> B) -> (FreeMonoid -> B);
@@ -38,7 +43,7 @@ Class UniversalProperty (B : Type) `{Monoid B} := {
   extend_mor : forall (g : Basis -> B), MonoidHomomorphism (extend g);
 
   (* extend_unique : forall (g : X -> B) (f : A -> B), MonoidHomomorphism f ->
-                   (forall x, f (canonical_inj x) = g x) -> forall a, f a = extend g a *)
+                   (forall x, f (i x) = g x) -> forall a, f a = extend g a *)
   extend_unique : forall (g : Basis -> B) (f : FreeMonoid -> B), MonoidHomomorphism f ->
                    (forall x, f (canonical_inj x) = g x) -> forall a, f a = extend g a
 }.
