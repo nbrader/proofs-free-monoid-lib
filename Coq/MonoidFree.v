@@ -36,8 +36,7 @@ Class UniversalProperty (B : Type) `{Monoid B} := {
        ↓ f         ↘   ↓ U(f)
        B          g   U(B)
       
-      Please note: The forgetful functor U is left implicit in the code.
-  *)
+      Please note: The forgetful functor U is left implicit in the code. *)
   
   (* extend : (X -> B) -> (A -> B); *)
   extend : (Basis -> B) -> (FreeMonoid -> B);
