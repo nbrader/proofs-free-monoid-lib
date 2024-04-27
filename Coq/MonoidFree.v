@@ -71,7 +71,7 @@ Proof.
 Qed.
 
 (* Proof that extend_monoid is the unique such extension *)
-Lemma extend_monoid_unique (g : Basis -> A) (f : FreeMonoid -> A) (gHom : MonoidHomomorphism f) :
+Lemma extend_monoid_unique (g : Basis -> A) (f : FreeMonoid -> A) (fHom : MonoidHomomorphism f) :
   (forall x, f (canonical_inj x) = g x) -> forall y, f y = extend_monoid g y.
 Proof.
   unfold extend_monoid.
@@ -81,7 +81,7 @@ Proof.
     unfold extend_monoid. simpl.
     assert (H_mn_id: f [] = mn_id).
     { 
-      destruct gHom.
+      destruct fHom.
       apply homo_preserves_id.
     }
     exact H_mn_id.
@@ -91,7 +91,7 @@ Proof.
     rewrite <- H.
     assert (H_cons: f (b :: bs) = m_op (f [b]) (f bs)).
     {
-      destruct gHom.
+      destruct fHom.
       rewrite <- homo_preserves_op.
       - f_equal.
     }
