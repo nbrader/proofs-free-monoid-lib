@@ -30,11 +30,14 @@ Definition canonical_inj (b : Basis) : FreeMonoid := [b].
 
 
 Class UniversalProperty (B : Type) `{Monoid B} := {
-  (*      (Set)               (Mon)
-        i                
+  (*
+          (Set)               (Mon)
+
+        i
       X ⟶ U(A)                A
         ↘   ↓ U(extend f)      ↓ extend f
        f   U(B)                B
+      
       
       Please note: The forgetful functor U is left implicit in the code below. *)
   
