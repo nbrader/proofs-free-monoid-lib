@@ -41,12 +41,12 @@ Class UniversalProperty (B : Type) `{Monoid B} := {
   (* extend : (X -> B) -> (A -> B); *)
   extend : (Basis -> B) -> (FreeMonoid -> B);
   
-  (* extend_mor : forall (g : X -> B), MonoidHomomorphism (extend g); *)
-  extend_mor : forall (g : Basis -> B), MonoidHomomorphism (extend g);
+  (* extend_mor : forall (f : X -> B), MonoidHomomorphism (extend f); *)
+  extend_mor : forall (f : Basis -> B), MonoidHomomorphism (extend f);
 
-  (* extend_unique : forall (g : X -> B) (f : A -> B), MonoidHomomorphism f ->
+  (* extend_unique : forall (f : A -> B) (g : X -> B), MonoidHomomorphism f ->
                    (forall x, f (i x) = g x) -> forall a, f a = extend g a *)
-  extend_unique : forall (g : Basis -> B) (f : FreeMonoid -> B), MonoidHomomorphism f ->
+  extend_unique : forall (f : FreeMonoid -> B) (g : Basis -> B), MonoidHomomorphism f ->
                    (forall x, f (canonical_inj x) = g x) -> forall a, f a = extend g a
 }.
 
@@ -71,15 +71,15 @@ Proof.
 Qed.
 
 (* Proof that extend_monoid is the unique such extension *)
-Lemma extend_monoid_unique (f : Basis -> A) (g : FreeMonoid -> A) (gHom : MonoidHomomorphism g) :
-  (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend_monoid f y.
+Lemma extend_monoid_unique (g : Basis -> A) (f : FreeMonoid -> A) (gHom : MonoidHomomorphism f) :
+  (forall x, f (canonical_inj x) = g x) -> forall y, f y = extend_monoid g y.
 Proof.
   unfold extend_monoid.
   intros.
   induction y as [|b bs IHbs].
   - (* Base case for the empty list *)
     unfold extend_monoid. simpl.
-    assert (H_mn_id: g [] = mn_id).
+    assert (H_mn_id: f [] = mn_id).
     { 
       destruct gHom.
       apply homo_preserves_id.
@@ -87,9 +87,9 @@ Proof.
     exact H_mn_id.
   - (* Inductive step for non-empty lists *)
     simpl.
-    specialize (H b).  (* Utilize the fact that g (canonical_inj b) = f b *)
+    specialize (H b).  (* Utilize the fact that f (canonical_inj b) = g b *)
     rewrite <- H.
-    assert (H_cons: g (b :: bs) = m_op (g [b]) (g bs)).
+    assert (H_cons: f (b :: bs) = m_op (f [b]) (f bs)).
     {
       destruct gHom.
       rewrite <- homo_preserves_op.
@@ -104,9 +104,9 @@ End UniversalPropertyProof.
 
 Instance FreeMonoid_UniversalProperty {A : Type} `{Monoid A} : UniversalProperty A :=
   {
-    extend := fun f => @extend_monoid A _ _ _ f;
+    extend := fun g => @extend_monoid A _ _ _ g;
     extend_mor := @extend_monoid_homomorphism A _ _ _;
-    extend_unique := fun (f : Basis -> A) (g : FreeMonoid -> A) (Hg : MonoidHomomorphism g)
-                      (H : forall x, g (canonical_inj x) = f x) => 
-                     @extend_monoid_unique A _ _ _ _ g Hg H
+    extend_unique := fun (f : FreeMonoid -> A) (g : Basis -> A) (Hf : MonoidHomomorphism f)
+                      (H : forall x, f (canonical_inj x) = g x) => 
+                     @extend_monoid_unique A _ _ _ _ f Hf H
   }.
