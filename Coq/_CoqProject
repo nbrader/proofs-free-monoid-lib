@@ -10,3 +10,4 @@ HomExampleBoolOrToNatMax1.v
 Category.v
 TypeCategory.v
 ExtraLemmas.v
+MonoidFreeTest.v
