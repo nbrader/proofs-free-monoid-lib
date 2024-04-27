@@ -33,14 +33,6 @@ Proof.
   intros x y z.
   unfold MonoidFree.extend, example_function.
   simpl.
-
-  (* Expand the definition of fold_right assuming extend uses it for lists *)
-  unfold fold_right.
-
-  (* Simplify the computation of fold_right. It should fold the function over [x, y, z] starting with 0:
-     2 * Basis_to_nat x + (2 * Basis_to_nat y + (2 * Basis_to_nat z + 0)) *)
   rewrite !Nat.add_assoc.  (* Use associativity of addition to simplify the nested additions *)
-
-  (* Now, you may manually unfold and simplify, or use a tactic like 'ring' to simplify arithmetic *)
   ring.
 Qed.
