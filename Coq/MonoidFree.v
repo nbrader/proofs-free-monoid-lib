@@ -49,14 +49,18 @@ Class UniversalProperty (B : Type) `{Monoid B} := {
 
   (* extend_unique : forall (f : X -> B) (g : A -> B), MonoidHomomorphism g ->
                    (forall x, g (i x) = f x) -> forall a, g a = extend f a *)
+  extend_universal : forall (f : Basis -> B) (x : Basis), extend f (canonical_inj x) = f x;
+
+  (* extend_unique : forall (f : X -> B) (g : A -> B), MonoidHomomorphism g ->
+                   (forall x, g (i x) = f x) -> forall a, g a = extend f a *)
   extend_unique : forall (f : Basis -> B) (g : FreeMonoid -> B), MonoidHomomorphism g ->
-                   (forall x, g (canonical_inj x) = f x) -> forall a, g a = extend f a
+                   (forall (x : Basis), g (canonical_inj x) = f x) -> forall a, g a = extend f a
 }.
 
 
 Section UniversalPropertyProof.
 
-Context {A : Type} (Hmagma : Magma A) (Hsemigroup : Semigroup A) (Hmonoid : Monoid A).
+Context {A : Type} (HmagmaA : Magma A) (HsemigroupA : Semigroup A) (HmonoidA : Monoid A).
 
 (* Extends a function f : Basis -> A to a function FreeMonoid -> A *)
 Definition extend_monoid (f : Basis -> A) : FreeMonoid -> A :=
@@ -72,6 +76,14 @@ Proof.
     + simpl in *. rewrite <- sg_assoc. f_equal. apply IH.
   - simpl. reflexivity.
 Qed.
+
+
+Lemma extend_monoid_universal (f : Basis -> A) (x : Basis) : extend_monoid f (canonical_inj x) = f x.
+Proof.
+  unfold extend_monoid, canonical_inj. simpl.
+  rewrite mn_right_id. reflexivity.
+Qed.
+
 
 (* Proof that extend_monoid is the unique such extension *)
 Lemma extend_monoid_unique (f : Basis -> A) (g : FreeMonoid -> A) (gHom : MonoidHomomorphism g) :
@@ -105,11 +117,11 @@ Qed.
 
 End UniversalPropertyProof.
 
+
 Instance FreeMonoid_UniversalProperty {A : Type} `{Monoid A} : UniversalProperty A :=
-  {
-    extend := fun f => @extend_monoid A _ _ _ f;
-    extend_mor := @extend_monoid_homomorphism A _ _ _;
-    extend_unique := fun (f : Basis -> A) (g : FreeMonoid -> A) (Hg : MonoidHomomorphism g)
-                      (H : forall x, g (canonical_inj x) = f x) => 
-                     @extend_monoid_unique A _ _ _ _ g Hg H
-  }.
+{
+  extend := fun f => @extend_monoid A _ _ _ f;
+  extend_mor := @extend_monoid_homomorphism A _ _ _;
+  extend_universal := @extend_monoid_universal A _ _ _;  (* Correctly assign the lemma proving the universal property *)
+  extend_unique := @extend_monoid_unique A _ _ _;
+}.
