@@ -47,12 +47,11 @@ Class UniversalProperty (B : Type) `{Monoid B} := {
   (* extend_mor : forall (f : X -> B), MonoidHomomorphism (extend f); *)
   extend_mor : forall (f : Basis -> B), MonoidHomomorphism (extend f);
 
-  (* extend_unique : forall (f : X -> B) (g : A -> B), MonoidHomomorphism g ->
-                   (forall x, g (i x) = f x) -> forall a, g a = extend f a *)
+  (* extend_unique : forall (f : X -> B) (x : X), extend f (i x) = f x *)
   extend_universal : forall (f : Basis -> B) (x : Basis), extend f (canonical_inj x) = f x;
 
   (* extend_unique : forall (f : X -> B) (g : A -> B), MonoidHomomorphism g ->
-                   (forall x, g (i x) = f x) -> forall a, g a = extend f a *)
+                   (forall (x : X), g (i x) = f x) -> forall a, g a = extend f a *)
   extend_unique : forall (f : Basis -> B) (g : FreeMonoid -> B), MonoidHomomorphism g ->
                    (forall (x : Basis), g (canonical_inj x) = f x) -> forall a, g a = extend f a
 }.
