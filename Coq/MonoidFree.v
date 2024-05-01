@@ -22,8 +22,8 @@ Instance FreeMonoid_Semigroup : Semigroup FreeMonoid := {
 
 Instance FreeMonoid_Monoid : Monoid FreeMonoid := {
   mn_id := [];
-  mn_left_id := fun x => eq_refl : m_op [] x = x;  (* This works because [] ++ x is textually x in Coq's list concatenation *)
-  mn_right_id := @app_nil_r Basis  (* Applying the lemma for list concatenation *)
+  mn_left_id := @app_nil_l Basis;
+  mn_right_id := @app_nil_r Basis
 }.
 
 Definition canonical_inj (b : Basis) : FreeMonoid := [b].
