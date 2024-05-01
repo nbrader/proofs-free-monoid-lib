@@ -17,7 +17,7 @@ Instance FreeMonoid_Magma : Magma FreeMonoid := {
 }.
 
 Instance FreeMonoid_Semigroup : Semigroup FreeMonoid := {
-  sg_assoc := fun x y z => app_assoc x y z  (* Applying associativity of list concatenation *)
+  sg_assoc := @app_assoc Basis
 }.
 
 Instance FreeMonoid_Monoid : Monoid FreeMonoid := {
