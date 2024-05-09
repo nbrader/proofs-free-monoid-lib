@@ -67,11 +67,11 @@ Section UniversalPropertyProof.
 Context {A : Type} (HmagmaA : Magma A) (HsemigroupA : Semigroup A) (HmonoidA : Monoid A).
 
 (* Extends a function f : Basis -> A to a function FreeMonoid -> A *)
-Definition extend_monoid (f : Basis -> A) : FreeMonoid -> A :=
+Definition extend_monoid `{Monoid A} (f : Basis -> A) : FreeMonoid -> A :=
   fold_right (fun b acc => m_op (f b) acc) mn_id.
 
 (* Proof that extend_monoid f is a monoid homomorphism *)
-Lemma extend_monoid_homomorphism (f : Basis -> A) : MonoidHomomorphism (extend_monoid f).
+Lemma extend_monoid_homomorphism `{Monoid A} (f : Basis -> A) : MonoidHomomorphism (extend_monoid f).
 Proof.
   split.
   - intros x y. unfold extend_monoid.
@@ -82,7 +82,7 @@ Proof.
 Qed.
 
 
-Lemma extend_monoid_universal (f : Basis -> A) (x : Basis) : extend_monoid f (canonical_inj x) = f x.
+Lemma extend_monoid_universal `{Monoid A} (f : Basis -> A) (x : Basis) : extend_monoid f (canonical_inj x) = f x.
 Proof.
   unfold extend_monoid, canonical_inj. simpl.
   rewrite mn_right_id. reflexivity.
@@ -124,9 +124,9 @@ End UniversalPropertyProof.
 
 Instance FreeMonoid_UniversalProperty {A : Type} `{Monoid A} : UniversalProperty A :=
 {
-  extend := fun f => @extend_monoid A _ _ _ f;
-  extend_mor := @extend_monoid_homomorphism A _ _ _;
-  extend_universal := @extend_monoid_universal A _ _ _;  (* Correctly assign the lemma proving the universal property *)
+  extend := fun f => extend_monoid f;
+  extend_mor := extend_monoid_homomorphism;
+  extend_universal := extend_monoid_universal;  (* Correctly assign the lemma proving the universal property *)
   extend_unique := @extend_monoid_unique A _ _ _;
 }.
 
