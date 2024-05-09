@@ -6,7 +6,12 @@ Require Import FreeMonoid.StructMonoid.
 Require Import FreeMonoid.MonoidHom.
 Require Import Coq.Arith.Mult.
 
-Variable Basis : Type.
+Module Type BasisType.
+  Parameter Basis : Type.
+End BasisType.
+
+Module FreeMonoidModule (B : BasisType).
+Definition Basis := B.Basis.
 
 (* The type of lists over the Basis, representing the free monoid on Basis *)
 Definition FreeMonoid := list Basis.
@@ -124,3 +129,5 @@ Instance FreeMonoid_UniversalProperty {A : Type} `{Monoid A} : UniversalProperty
   extend_universal := @extend_monoid_universal A _ _ _;  (* Correctly assign the lemma proving the universal property *)
   extend_unique := @extend_monoid_unique A _ _ _;
 }.
+
+End FreeMonoidModule.

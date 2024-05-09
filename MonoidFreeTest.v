@@ -21,31 +21,21 @@ Instance nat_Monoid : Monoid nat := {
   mn_right_id := Nat.add_0_r
 }.
 
-Axiom Basis_to_nat : MonoidFree.Basis -> nat.
+Module NatBasis.
+  Definition Basis := nat.
+End NatBasis.
+
+Module NatFreeMonoid := FreeMonoidModule NatBasis.
 
 (* Define a proposition that asserts something about lifted_function *)
-Theorem lifted_function_correct : forall x y z : MonoidFree.Basis,
-  (MonoidFree.extend (fun b => 2*Basis_to_nat b)) [x; y; z] = 2*Basis_to_nat x + 2*Basis_to_nat y + 2*Basis_to_nat z.
+Theorem lifted_function_correct : forall x y z : nat,
+  (@NatFreeMonoid.extend _ _ _ _ NatFreeMonoid.FreeMonoid_UniversalProperty (fun b => 2*b)) [x; y; z] = 2*x + 2*y + 2*z.
 Proof.
   intros x y z.
-  unfold MonoidFree.extend.
+  unfold NatFreeMonoid.extend.
   simpl.
   rewrite !Nat.add_assoc.  (* Use associativity of addition to simplify the nested additions *)
   ring.
 Qed.
 
-Axiom b0 : MonoidFree.Basis.
-Axiom b1 : MonoidFree.Basis.
-Axiom b2 : MonoidFree.Basis.
-Axiom b3 : MonoidFree.Basis.
-Axiom basis_b0 : Basis_to_nat b0 = 0.
-Axiom basis_b1 : Basis_to_nat b1 = 1.
-Axiom basis_b2 : Basis_to_nat b2 = 2.
-Axiom basis_b3 : Basis_to_nat b3 = 3.
-
-Theorem example_theorem : (MonoidFree.extend (fun b => 2*Basis_to_nat b)) [b0; b1; b2] = 6.
-Proof.
-  rewrite lifted_function_correct.
-  rewrite basis_b0, basis_b1, basis_b2.
-  reflexivity.
-Qed.
+(* Compute (@NatFreeMonoid.extend _ _ _ _ NatFreeMonoid.FreeMonoid_UniversalProperty (fun b => 2*b)) [0; 1; 2]. *)
