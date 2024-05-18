@@ -1,0 +1,2 @@
+When committing submodule with TortoiseGit, use the following:
+    HEAD:refs/heads/main
