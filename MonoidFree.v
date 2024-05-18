@@ -1,8 +1,6 @@
 Require Import Coq.Lists.List.
 Import ListNotations.
-Require Import FreeMonoid.StructMagma.
-Require Import FreeMonoid.StructSemigroup.
-Require Import FreeMonoid.StructMonoid.
+Require Import FreeMonoid.StructMonoid. Export FreeMonoid.StructSemigroup.
 Require Import FreeMonoid.MonoidHom.
 Require Import Coq.Arith.Mult.
 

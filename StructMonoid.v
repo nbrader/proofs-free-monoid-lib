@@ -1,5 +1,4 @@
-Require Import FreeMonoid.StructMagma.
-Require Import FreeMonoid.StructSemigroup.
+Require Import FreeMonoid.StructSemigroup. Export FreeMonoid.StructSemigroup.
 
 Class Monoid (A : Type) `{Semigroup A} := {
   mn_id : A;
