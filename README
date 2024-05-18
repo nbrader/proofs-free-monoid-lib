@@ -1,4 +1,4 @@
 When committing submodule with TortoiseGit, say no to making a branch and then commit to the following:
     HEAD:refs/heads/main
 
-After this, do a submodule update on the outer repo with everything ticked.
+After this, commit the latest submodule to the outer repo and do a submodule update with everything ticked.
