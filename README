@@ -1,2 +1,4 @@
-When committing submodule with TortoiseGit, use the following:
+When committing submodule with TortoiseGit, say no to making a branch and then commit to the following:
     HEAD:refs/heads/main
+
+After this, do a submodule update on the outer repo with everything ticked.
