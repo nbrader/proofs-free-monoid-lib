@@ -1,7 +1,5 @@
 Require Import Coq.Program.Basics.
 Require Import Coq.Program.Combinators.
-Require Import FreeMonoid.StructMagma.
-Require Import FreeMonoid.StructSemigroup.
 Require Import FreeMonoid.StructMonoid.
 
 Instance EndoMagma (A : Type) : Magma (A -> A) := {

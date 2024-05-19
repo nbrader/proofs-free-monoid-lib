@@ -1,6 +1,4 @@
 Require Import FreeMonoid.MonoidFree.
-Require Import FreeMonoid.StructMagma.
-Require Import FreeMonoid.StructSemigroup.
 Require Import FreeMonoid.StructMonoid.
 Require Import Coq.Arith.Plus.
 Require Import Coq.Lists.List.
