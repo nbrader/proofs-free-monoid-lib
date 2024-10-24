@@ -21,7 +21,7 @@ Proof.
    reflexivity.
 Qed.
 
-Instance ExtendToFunctionMagmaSemigroup (A B : Type) `{Hmon : Monoid B} : Semigroup (A -> B) := {
+Instance ExtendToFunctionSemigroup (A B : Type) `{Hmon : Monoid B} : Semigroup (A -> B) := {
   sg_assoc := app_op_assoc A B
 }.
 
@@ -47,7 +47,7 @@ Proof.
   apply mn_right_id.
 Qed.
 
-Instance ExtendToFunctionMagmaMonoid (A B : Type) `{Hmon : Monoid B} : Monoid (A -> B) := {
+Instance ExtendToFunctionMonoid (A B : Type) `{Hmon : Monoid B} : Monoid (A -> B) := {
   mn_id := fun _ => mn_id;
   mn_left_id := app_op_left_id A B;
   mn_right_id := app_op_right_id A B
