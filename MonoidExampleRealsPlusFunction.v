@@ -8,7 +8,6 @@ Require Import FreeMonoid.MonoidExampleRealsPlus.
 Require Import FreeMonoid.MonoidExampleExtendToFunction.
 Require Import Coq.Lists.List.
 Import ListNotations.
-Check @m_op.
 
 Definition FunctionToRealsMagma (A : Type) := @ExtendToFunctionMagma A R RplusMagma RplusSemigroup RplusMonoid.
 Definition FunctionToRealsSemigroup (A : Type) := @ExtendToFunctionSemigroup A R RplusMagma RplusSemigroup RplusMonoid.
