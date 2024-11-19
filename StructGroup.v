@@ -5,6 +5,7 @@ Definition is_left_inv (A : Type) (m_op : A -> A -> A) (mn_id : A) (g_inv : A ->
 Definition is_right_inv (A : Type) (m_op : A -> A -> A) (mn_id : A) (g_inv : A -> A) := forall x : A, m_op x (g_inv x) = mn_id.
 Definition is_inv (A : Type) (m_op : A -> A -> A) (mn_id : A) (g_inv : A -> A) := (is_left_inv A m_op mn_id g_inv) /\ (is_right_inv A m_op mn_id g_inv).
 
+(* This actually assumes more than it needs to because Monoid requires you to implement both left and right identity whereas Group only requires left. *)
 Class Group (A : Type) `{Monoid A} := {
   g_inv : A -> A;
   g_inv_left : is_left_inv A m_op mn_id g_inv;
