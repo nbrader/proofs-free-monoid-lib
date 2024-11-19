@@ -123,15 +123,7 @@ Proof.
   destruct x; reflexivity.
 Qed.
 
-Lemma q1a_op_g_inv_right :
-  forall x : Q1a_Set, m_op x (Q1a_inv x) = mn_id.
-Proof.
-  intros x.
-  destruct x; reflexivity.
-Qed.
-
 Instance Q1a_Group : Group Q1a_Set := {
   g_inv := Q1a_inv;
   g_inv_left := q1a_op_g_inv_left;
-  g_inv_right := q1a_op_g_inv_right
 }.

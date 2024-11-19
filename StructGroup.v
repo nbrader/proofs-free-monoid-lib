@@ -8,7 +8,6 @@ Definition is_inv (A : Type) (m_op : A -> A -> A) (mn_id : A) (g_inv : A -> A) :
 Class Group (A : Type) `{Monoid A} := {
   g_inv : A -> A;
   g_inv_left : is_left_inv A m_op mn_id g_inv;
-  g_inv_right : is_right_inv A m_op mn_id g_inv;
 }.
 
 Theorem id_unique (A : Type) `{Group A} (x : A) (x_id : is_id A m_op x) : x = mn_id.
@@ -18,6 +17,31 @@ Proof.
   specialize (H4 mn_id).
   rewrite mn_left_id in H4.
   apply H4.
+Qed.
+
+Theorem g_inv_right (A : Type) `{Group A} : is_right_inv A m_op mn_id g_inv.
+Proof.
+  unfold is_right_inv.
+  intros.
+  rewrite <- mn_left_id at 1.
+  rewrite <- (g_inv_left (g_inv x)) at 1.
+  rewrite <- sg_assoc.
+  rewrite (sg_assoc (g_inv x) x (g_inv x)).
+  rewrite g_inv_left.
+  rewrite mn_left_id.
+  rewrite g_inv_left.
+  reflexivity.
+Qed.
+
+Theorem g_inv_involutive (A : Type) `{Group A} (x : A) : g_inv (g_inv x) = x.
+Proof.
+  assert (m_op (g_inv (g_inv x)) (m_op (g_inv x) x) = m_op (g_inv (g_inv x)) (m_op (g_inv x) x)) by reflexivity.
+  rewrite sg_assoc in H3 at 2.
+  rewrite (g_inv_left (g_inv x)) in H3.
+  rewrite mn_left_id in H3.
+  rewrite (g_inv_left x) in H3.
+  rewrite mn_right_id in H3.
+  exact H3.
 Qed.
 
 Definition is_left_partial_id (A : Type) (m_op : A -> A -> A) (partial_id : A) := exists x : A, m_op partial_id x = x.
@@ -31,7 +55,7 @@ Proof.
   unfold is_left_partial_id in *.
   destruct x_is_partial_id as [z x_is_partial_id].
   rewrite <- mn_right_id.
-  rewrite <- (g_inv_right z).
+  rewrite <- (@g_inv_right A H H0 H1 H2 z).
   rewrite sg_assoc.
   rewrite x_is_partial_id. clear x_is_partial_id.
   reflexivity.
