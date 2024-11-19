@@ -11,7 +11,6 @@ Theorem g_hom_preserves_id {A B : Type} `{Group A} `{Group B} (f : A -> B) (fHom
 Proof.
   pose proof (@g_hom_preserves_op A B H H0 H1 H2 H3 H4 H5 H6 f fHom).
   assert (forall x : A, f (m_op x mn_id) = m_op (f x) (f mn_id)) by (intros; apply H7; rewrite mn_right_id).
-  assert (forall x : A, f (m_op mn_id x) = m_op (f mn_id) (f x)) by (intros; apply H7; rewrite mn_right_id).
   assert (forall x : A, f x = m_op (f x) (f mn_id)).
   {
     intros.
@@ -19,21 +18,23 @@ Proof.
     rewrite mn_right_id in H8.
     apply H8.
   }
-  apply (id_unique B).
-  - unfold is_id.
+  specialize (H9 (mn_id)).
+  assert (@is_partial_id B m_op (f mn_id)).
+  {
+    unfold is_partial_id.
     split.
-    + unfold is_left_id.
-      intros.
-      (* assert (is_left_partial_id B m_op (f mn_id)).
-      {
-        unfold is_left_partial_id.
-        exists (f x).
-      } *)
-      pose proof (partial_id_unique A).
-      admit.
-    + unfold is_right_id.
-      admit.
-Admitted.
+    - unfold is_left_partial_id.
+      exists (f mn_id).
+      apply eq_sym.
+      exact H9.
+    - unfold is_right_partial_id.
+      exists (f mn_id).
+      apply eq_sym.
+      exact H9.
+  }
+  apply (@partial_id_unique B H3 H4 H5 H6 (f mn_id)).
+  exact H10.
+Qed.
 
 Theorem g_hom_preserves_inv {A B : Type} `{Group A} `{Group B} (f : A -> B) : forall x : A, f (g_inv x) = g_inv (f x).
   admit.
