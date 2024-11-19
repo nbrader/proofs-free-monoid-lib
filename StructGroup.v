@@ -36,10 +36,7 @@ Proof.
   unfold is_left_id in *.
   unfold is_right_id in *.
   unfold is_left_partial_id in *.
-  assert (temp1 : x = x) by reflexivity.
-  rewrite <- temp03 in temp1.
   destruct temp01 as [x0 temp05].
-  assert (temp2 : mn_id = mn_id) by reflexivity.
   pose proof (@g_inv_right A H H0 H1 H2 x0) as temp3.
   rewrite <- temp05 in temp3 at 1.
   rewrite <- sg_assoc in temp3.
