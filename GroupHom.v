@@ -19,25 +19,24 @@ Proof.
     apply H8.
   }
   specialize (H9 (mn_id)).
-  assert (@is_partial_id B m_op (f mn_id)).
+  assert (@is_left_partial_id B m_op (f mn_id)).
   {
-    unfold is_partial_id.
-    split.
-    - unfold is_left_partial_id.
-      exists (f mn_id).
-      apply eq_sym.
-      exact H9.
-    - unfold is_right_partial_id.
-      exists (f mn_id).
-      apply eq_sym.
-      exact H9.
+    unfold is_left_partial_id.
+    exists (f mn_id).
+    apply eq_sym.
+    exact H9.
   }
   apply (@partial_id_unique B H3 H4 H5 H6 (f mn_id)).
   exact H10.
 Qed.
 
-Theorem g_hom_preserves_inv {A B : Type} `{Group A} `{Group B} (f : A -> B) : forall x : A, f (g_inv x) = g_inv (f x).
-  admit.
-Admitted.
+Theorem g_hom_preserves_inv {A B : Type} `{Group A} `{Group B} (f : A -> B) (fHom : GroupHomomorphism f) : forall x : A, f (g_inv x) = g_inv (f x).
+  intros.
+  pose proof (@g_hom_preserves_id A B H H0 H1 H2 H3 H4 H5 H6 f fHom).
+  rewrite <- (g_inv_left x) in H7.
+  rewrite g_hom_preserves_op in H7.
+  pose proof (inv_unique_3 B (f (g_inv x)) (f x) H7). clear H7.
+  exact H8.
+Qed.
 
 End GroupHomomorphisms.
