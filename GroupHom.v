@@ -24,13 +24,15 @@ Proof.
     split.
     + unfold is_left_id.
       intros.
+      (* assert (is_left_partial_id B m_op (f mn_id)).
+      {
+        unfold is_left_partial_id.
+        exists (f x).
+      } *)
+      pose proof (partial_id_unique A).
       admit.
     + unfold is_right_id.
       admit.
-  - unfold is_id.
-    split.
-    + apply mn_left_id.
-    + apply mn_right_id.
 Admitted.
 
 Theorem g_hom_preserves_inv {A B : Type} `{Group A} `{Group B} (f : A -> B) : forall x : A, f (g_inv x) = g_inv (f x).

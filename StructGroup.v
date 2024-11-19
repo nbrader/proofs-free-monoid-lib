@@ -11,29 +11,23 @@ Class Group (A : Type) `{Monoid A} := {
   g_inv_right : is_right_inv A m_op mn_id g_inv;
 }.
 
-Theorem id_unique (A : Type) `{Group A} (x y : A) (x_id : is_id A m_op x) (y_id : is_id A m_op y) : x = y.
+Theorem id_unique (A : Type) `{Group A} (x : A) (x_id : is_id A m_op x) : x = mn_id.
 Proof.
   unfold is_id in *.
   destruct x_id.
-  destruct y_id.
-  unfold is_left_id in *.
-  unfold is_right_id in *.
-  assert (x = x) by reflexivity.
-  rewrite <- H5 in H7.
-  rewrite H4 in H7.
-  apply H7.
+  specialize (H4 mn_id).
+  rewrite mn_left_id in H4.
+  apply H4.
 Qed.
 
 Definition is_left_partial_id (A : Type) (m_op : A -> A -> A) (partial_id : A) := exists x : A, m_op partial_id x = x.
 Definition is_right_partial_id (A : Type) (m_op : A -> A -> A) (partial_id : A) := exists x : A, m_op x partial_id = x.
 Definition is_partial_id (A : Type) (m_op : A -> A -> A) (partial_id : A) := (is_left_partial_id A m_op partial_id) /\ (is_right_partial_id A m_op partial_id).
 
-Theorem id_unique_strong (A : Type) `{Group A} (x : A) (x_id : is_partial_id A m_op x) : x = mn_id.
+Theorem partial_id_unique (A : Type) `{Group A} (x : A) (x_id : is_partial_id A m_op x) : x = mn_id.
 Proof.
   unfold is_id in *.
   destruct x_id as [x_is_partial_id _].
-  unfold is_left_id in *.
-  unfold is_right_id in *.
   unfold is_left_partial_id in *.
   destruct x_is_partial_id as [z x_is_partial_id].
   rewrite <- mn_right_id.
