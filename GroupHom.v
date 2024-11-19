@@ -9,14 +9,28 @@ Class GroupHomomorphism {A B : Type} `{Group A} `{Group B} (f : A -> B) := {
 
 Theorem g_hom_preserves_id {A B : Type} `{Group A} `{Group B} (f : A -> B) (fHom : GroupHomomorphism f) : f (mn_id) = mn_id.
 Proof.
-  pose proof (@g_hom_preserves_op A B H H0 H1 H2 H3 H4 H5 H6 f fHom mn_id mn_id).
-  rewrite mn_left_id in H7.
-  rewrite H7. clear H7.
-  pose proof (g_inv_right (f mn_id)).
-  rewrite <- H7. clear H7.
-  f_equal.
-  pose proof (id_unique B).
-  admit.
+  pose proof (@g_hom_preserves_op A B H H0 H1 H2 H3 H4 H5 H6 f fHom).
+  assert (forall x : A, f (m_op x mn_id) = m_op (f x) (f mn_id)) by (intros; apply H7; rewrite mn_right_id).
+  assert (forall x : A, f (m_op mn_id x) = m_op (f mn_id) (f x)) by (intros; apply H7; rewrite mn_right_id).
+  assert (forall x : A, f x = m_op (f x) (f mn_id)).
+  {
+    intros.
+    specialize (H8 x).
+    rewrite mn_right_id in H8.
+    apply H8.
+  }
+  apply (id_unique B).
+  - unfold is_id.
+    split.
+    + unfold is_left_id.
+      intros.
+      admit.
+    + unfold is_right_id.
+      admit.
+  - unfold is_id.
+    split.
+    + apply mn_left_id.
+    + apply mn_right_id.
 Admitted.
 
 Theorem g_hom_preserves_inv {A B : Type} `{Group A} `{Group B} (f : A -> B) : forall x : A, f (g_inv x) = g_inv (f x).
