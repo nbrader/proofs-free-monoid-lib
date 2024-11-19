@@ -28,18 +28,17 @@ Definition is_left_partial_id (A : Type) (m_op : A -> A -> A) (partial_id : A) :
 Definition is_right_partial_id (A : Type) (m_op : A -> A -> A) (partial_id : A) := exists x : A, m_op x partial_id = x.
 Definition is_partial_id (A : Type) (m_op : A -> A -> A) (partial_id : A) := (is_left_partial_id A m_op partial_id) /\ (is_right_partial_id A m_op partial_id).
 
-Theorem id_unique_strong (A : Type) `{Group A} (x y : A) (x_id : is_partial_id A m_op x) (y_id : is_id A m_op y) : x = mn_id.
+Theorem id_unique_strong (A : Type) `{Group A} (x : A) (x_id : is_partial_id A m_op x) : x = mn_id.
 Proof.
   unfold is_id in *.
-  destruct x_id as [temp01 temp02]. clear temp02.
+  destruct x_id as [x_is_partial_id _].
   unfold is_left_id in *.
   unfold is_right_id in *.
   unfold is_left_partial_id in *.
-  destruct temp01 as [x0 temp02].
-  pose proof (@g_inv_right A H H0 H1 H2 x0) as temp03.
-  rewrite <- temp02 in temp03 at 1.
-  rewrite <- sg_assoc in temp03.
-  rewrite g_inv_right in temp03.
-  rewrite mn_right_id in temp03.
-  apply temp03.
+  destruct x_is_partial_id as [z x_is_partial_id].
+  rewrite <- mn_right_id.
+  rewrite <- (g_inv_right z).
+  rewrite sg_assoc.
+  rewrite x_is_partial_id. clear x_is_partial_id.
+  reflexivity.
 Qed.
