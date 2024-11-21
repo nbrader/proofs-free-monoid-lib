@@ -125,7 +125,7 @@ Admitted.
 
 Notation "a * b" := (Qnonzero_mult a b) : Q_scope.
 
-Definition q1b_op (a b : Qnonzero) : Qnonzero := (a * a) * (b * b).
+Definition q1b_op (a b : Qnonzero) : Qnonzero := (a * b) * (a * b).
 
 Instance Q1b_Magma : Magma Qnonzero := {
   m_op := q1b_op
@@ -141,7 +141,6 @@ Proof.
   intro.
   specialize (H two_nonzero one_nonzero one_nonzero).
   unfold q1b_op in H.
-  rewrite Qnonzero_id_right in H.
   rewrite Qnonzero_id_right in H.
   rewrite Qnonzero_id_right in H.
   rewrite Qnonzero_id_right in H.
