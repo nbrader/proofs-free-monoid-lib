@@ -4,11 +4,9 @@ Require Import FreeMonoid.StructMonoid.
 Require Import FreeMonoid.StructGroup.
 
 Require Import QArith.
-Require Import Qcanon.
-Require Import Coq.Logic.EqdepFacts.
-Require Import Coq.Classes.RelationClasses.
 
-Open Scope Q_scope.
+Require Import Coq.Setoids.Setoid.
+Require Import Coq.Classes.RelationClasses.
 
 (* ******************************************************* *)
 (*                    Set Definition                       *)
@@ -72,8 +70,6 @@ Defined.
 (*                 Qnonzero_mult Properties                *)
 (* ******************************************************* *)
 
-Require Import Coq.Setoids.Setoid.
-
 (* Declare the equivalence relation for rational numbers *)
 Global Instance Qeq_Equivalence : Equivalence Qeq.
 Proof.
@@ -92,32 +88,51 @@ Proof.
   reflexivity.
 Qed.
 
-Theorem Qnonzero_id_left : forall a : Qnonzero, Qnonzero_mult one_nonzero a = a.
+(* First, let's prove the identity laws *)
+Theorem Qnonzero_id_left : forall a : Qnonzero, Qnonzero_mult one_nonzero a == a.
 Proof.
-  admit.
-Admitted.
-
-Theorem Qnonzero_id_right : forall a : Qnonzero, Qnonzero_mult a one_nonzero = a.
-Proof.
-  admit.
-Admitted.
-
-Theorem Qnonzero_mult_assoc : forall n m p : Qnonzero, Qnonzero_mult n (Qnonzero_mult m p) = Qnonzero_mult (Qnonzero_mult n m) p.
-Proof.
-  admit.
-Admitted.
-
-Theorem Qnonzero_mult_comm (a b : Qnonzero) : Qnonzero_mult a b = Qnonzero_mult b a.
-Proof.
-  destruct a as [a Hq1].
-  destruct b as [b Hq2].
+  intros a.
   unfold Qnonzero_mult.
-  assert (Qmult a b == Qmult b a) by apply (Qmult_comm a b).
-  apply eq_dep_eq_sig.
-  (* rewrite H. *)
-  (* apply Q_dec. *)
-  admit.
-Admitted.
+  destruct a as [a Ha].
+  simpl.
+  rewrite Qmult_1_l.
+  apply Qeq_refl.
+Qed.
+
+Theorem Qnonzero_id_right : forall a : Qnonzero, Qnonzero_mult a one_nonzero == a.
+Proof.
+  intros a.
+  unfold Qnonzero_mult.
+  destruct a as [a Ha].
+  simpl.
+  rewrite Qmult_1_r.
+  apply Qeq_refl.
+Qed.
+
+(* Prove associativity *)
+Theorem Qnonzero_mult_assoc : forall a b c : Qnonzero, 
+  Qnonzero_mult a (Qnonzero_mult b c) == Qnonzero_mult (Qnonzero_mult a b) c.
+Proof.
+  intros a b c.
+  unfold Qnonzero_mult.
+  destruct a as [a Ha].
+  destruct b as [b Hb].
+  destruct c as [c Hc].
+  simpl.
+  rewrite Qmult_assoc.
+  apply Qeq_refl.
+Qed.
+
+(* Prove commutativity *)
+Theorem Qnonzero_mult_comm (a b : Qnonzero) : Qnonzero_mult a b == Qnonzero_mult b a.
+Proof.
+  unfold Qnonzero_mult.
+  destruct a as [a Ha].
+  destruct b as [b Hb].
+  simpl.
+  rewrite Qmult_comm.
+  apply Qeq_refl.
+Qed.
 
 (* ******************************************************* *)
 (*                        Magma Proof                      *)
@@ -136,14 +151,15 @@ Instance Q1b_Magma : Magma Qnonzero := {
 (* ******************************************************* *)
 
 Lemma q1b_op_assoc :
-  ~ (forall x y z : Qnonzero, q1b_op x (q1b_op y z) = q1b_op (q1b_op x y) z).
+  ~ (forall x y z : Qnonzero, q1b_op x (q1b_op y z) == q1b_op (q1b_op x y) z).
 Proof.
   intro.
   specialize (H two_nonzero one_nonzero one_nonzero).
   unfold q1b_op in H.
-  rewrite Qnonzero_id_right in H.
-  rewrite Qnonzero_id_right in H.
-  rewrite Qnonzero_id_right in H.
-  rewrite Qnonzero_id_right in H.
+  simpl in H.
+  rewrite Qmult_1_r in H.
+  rewrite Qmult_1_r in H.
+  rewrite Qmult_1_r in H.
+  rewrite Qmult_1_r in H.
   discriminate.
 Qed.
