@@ -132,7 +132,7 @@ Instance Q1b_Magma : Magma Qnonzero := {
 }.
 
 (* ******************************************************* *)
-(*                      Semigroup Proof                    *)
+(*                    Semigroup Disproof                   *)
 (* ******************************************************* *)
 
 Lemma q1b_op_assoc :
