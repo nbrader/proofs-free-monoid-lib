@@ -97,12 +97,7 @@ Qed.
 Require Import List.
 Import ListNotations.
 
-(*
-  To do:
-  Make associativity proofs for finitely generated groups simpler with this by showing that we only
-  need to show associativity holds for triples where the middle element is in the generating set.
-*)
-Definition is_finite_generating_set (A : Type) `{Group A} (gen_set : list A) : Prop :=
+Definition is_finite_generating_set_of_group (A : Type) `{Group A} (gen_set : list A) : Prop :=
   forall x : A, exists (gen_pairs : list (A * bool)),
     Forall (fun pair => In (fst pair) gen_set) gen_pairs /\
     x = fold_left (fun acc (pair : A * bool) =>
