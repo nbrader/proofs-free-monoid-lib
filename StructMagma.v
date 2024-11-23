@@ -14,8 +14,6 @@ Definition is_generating_set {A : Type} `{Magma A} (gen_set : list A) : Prop :=
     let gs := snd x_in_terms_of_gen_set in
     elems_only_from (g :: gs) gen_set /\ x = fold_left m_op gs g.
 
-Compute (fold_left (fun x y => x ++ y) [[1]; [2;4]] [5]).
-
 (* Theorem: Magma is associative if associativity holds when middle element is from generating set. *)
 Theorem associative_if_associative_with_middle_generators {A : Type} `{Magma A} (gen_set : list A) :
   forall (gen_set_proof : is_generating_set gen_set),
