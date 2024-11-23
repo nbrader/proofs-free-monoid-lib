@@ -76,8 +76,11 @@ Proof.
   assert (x_gs_assoc : Forall (fun x : A => forall x y : A, m_op (m_op x x_g) y = m_op x (m_op x_g y)) x_gs).
   {
     inversion x_gs_in_gen_set.
-    - admit.
-    - admit.
+    - constructor.
+    - constructor.
+      + intros.
+        auto.
+      + admit.
   }
   clear x_gs_in_gen_set.
   
@@ -103,8 +106,11 @@ Proof.
   assert (y_gs_assoc : Forall (fun y : A => forall y y : A, m_op (m_op y y_g) y = m_op y (m_op y_g y)) y_gs).
   {
     inversion y_gs_in_gen_set.
-    - admit.
-    - admit.
+    - constructor.
+    - constructor.
+      + intros.
+        auto.
+      + admit.
   }
   clear y_gs_in_gen_set.
   
@@ -130,8 +136,11 @@ Proof.
   assert (z_gs_assoc : Forall (fun z : A => forall z z : A, m_op (m_op z z_g) z = m_op z (m_op z_g z)) z_gs).
   {
     inversion z_gs_in_gen_set.
-    - admit.
-    - admit.
+    - constructor.
+    - constructor.
+      + intros.
+        auto.
+      + admit.
   }
   clear z_gs_in_gen_set.
 
