@@ -93,3 +93,19 @@ Proof.
   rewrite mn_left_id in H3.
   exact H3.
 Qed.
+
+Require Import List.
+Import ListNotations.
+
+(*
+  To do:
+  Make associativity proofs for finitely generated groups simpler with this by showing that we only
+  need to show associativity holds for triples where the middle element is in the generating set.
+*)
+Definition is_finite_generating_set (A : Type) `{Group A} (gen_set : list A) : Prop :=
+  forall x : A, exists (gen_pairs : list (A * bool)),
+    Forall (fun pair => In (fst pair) gen_set) gen_pairs /\
+    x = fold_left (fun acc (pair : A * bool) =>
+                     let (g, is_inverse) := pair in
+                     if is_inverse then m_op acc (g_inv g) else m_op acc g)
+                  gen_pairs mn_id.
