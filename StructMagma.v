@@ -14,6 +14,36 @@ Definition is_generating_set {A : Type} `{Magma A} (gen_set : list A) : Prop :=
     let gs := snd x_in_terms_of_gen_set in
     elems_only_from (g :: gs) gen_set /\ x = fold_left m_op gs g.
 
+Lemma Forall_app {A : Type} (P : A -> Prop) (l1 l2 : list A) :
+  Forall P l1 -> Forall P l2 -> Forall P (l1 ++ l2).
+Proof.
+  intros H1 H2. induction l1; simpl.
+  - exact H2.
+  - inversion H1; subst.
+    constructor; auto.
+Qed.
+
+Lemma fold_left_combine {A : Type} `{Magma A} (gen_set : list A) :
+  forall (assoc_mid_gen : forall g, In g gen_set -> 
+           forall x y, m_op (m_op x g) y = m_op x (m_op g y))
+         (l1 l2 : list A) (x g : A),
+  Forall (fun x => In x gen_set) l1 ->
+  Forall (fun x => In x gen_set) l2 ->
+  In g gen_set ->
+  m_op (fold_left m_op l1 x) (fold_left m_op l2 g) = 
+  fold_left m_op (l1 ++ g :: l2) x.
+Proof.
+  intros assoc_mid_gen l1 l2 x g H1 H2 Hg.
+  revert x. induction l1; simpl; intros x.
+  - induction l2; simpl.
+    + reflexivity.
+    + rewrite (assoc_mid_gen g Hg).
+      admit.
+  - inversion H1; subst.
+    rewrite IHl1; try assumption.
+    reflexivity.
+Admitted.
+
 (* Theorem: Magma is associative if associativity holds when middle element is from generating set. *)
 Theorem associative_if_associative_with_middle_generators {A : Type} `{Magma A} (gen_set : list A) :
   forall (gen_set_proof : is_generating_set gen_set),
