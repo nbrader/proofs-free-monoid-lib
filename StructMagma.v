@@ -53,16 +53,14 @@ Proof.
   - (* Base case: l1 is empty *)
     induction l2.
     + reflexivity.
-    + rewrite (assoc_mid_gen g Hg).
-      (* Switch to using fold_right so this part becomes easy. *)
+    + (* Switch to using fold_right so this part becomes easy. *)
       admit.
   - (* Inductive step: l1 = h :: t *)
     inversion H1; subst.
     specialize (IH H5 (m_op x h)).
     rewrite IH.
     reflexivity.
-Qed.
-
+Admitted.
 
 Lemma fold_left_three_part_LHS {A : Type} `{Magma A} (gen_set : list A) :
   forall (assoc_mid_gen : forall g, In g gen_set -> 
