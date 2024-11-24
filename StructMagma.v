@@ -54,8 +54,7 @@ Proof.
     + reflexivity.
     + rewrite (assoc_mid_gen g Hg).
       admit.
-  - inversion H1; subst.
-    rewrite IHl1; try assumption.
+  - rewrite IHl1 by (inversion H1; apply H5).
     reflexivity.
 Admitted.
 
@@ -65,7 +64,6 @@ Lemma fold_left_three_part_LHS {A : Type} `{Magma A} (gen_set : list A) :
          (x_g : A) (x_gs : list A) 
          (y_g : A) (y_gs : list A)
          (z_g : A) (z_gs : list A),
-  In x_g gen_set ->
   In y_g gen_set ->
   In z_g gen_set ->
   Forall (fun x => In x gen_set) x_gs ->
@@ -75,13 +73,10 @@ Lemma fold_left_three_part_LHS {A : Type} `{Magma A} (gen_set : list A) :
   fold_left m_op (x_gs ++ y_g :: y_gs ++ z_g :: z_gs) x_g.
 Proof.
   intros assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs
-         x_g_in y_g_in z_g_in x_gs_in y_gs_in z_gs_in.
+         y_g_in z_g_in x_gs_in y_gs_in z_gs_in.
   
-  rewrite (fold_left_combine gen_set assoc_mid_gen x_gs);
-  try assumption.
-  
-  rewrite (fold_left_combine gen_set assoc_mid_gen (x_gs ++ y_g :: y_gs) z_gs x_g);
-  try assumption.
+  rewrite (fold_left_combine gen_set assoc_mid_gen x_gs y_gs x_g y_g x_gs_in y_gs_in y_g_in).
+  rewrite (fold_left_combine gen_set assoc_mid_gen (x_gs ++ y_g :: y_gs) z_gs x_g z_g).
   
   - rewrite <- app_assoc. reflexivity.
   - apply Forall_app.
@@ -89,6 +84,8 @@ Proof.
     + constructor.
       * exact y_g_in.
       * exact y_gs_in.
+  - apply z_gs_in.
+  - apply z_g_in.
 Qed.
 
 Lemma fold_left_three_part_RHS {A : Type} `{Magma A} (gen_set : list A) :
@@ -97,7 +94,6 @@ Lemma fold_left_three_part_RHS {A : Type} `{Magma A} (gen_set : list A) :
          (x_g : A) (x_gs : list A) 
          (y_g : A) (y_gs : list A)
          (z_g : A) (z_gs : list A),
-  In x_g gen_set ->
   In y_g gen_set ->
   In z_g gen_set ->
   Forall (fun x => In x gen_set) x_gs ->
@@ -107,13 +103,10 @@ Lemma fold_left_three_part_RHS {A : Type} `{Magma A} (gen_set : list A) :
   fold_left m_op (x_gs ++ y_g :: y_gs ++ z_g :: z_gs) x_g.
 Proof.
   intros assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs
-         x_g_in y_g_in z_g_in x_gs_in y_gs_in z_gs_in.
+         y_g_in z_g_in x_gs_in y_gs_in z_gs_in.
   
-  rewrite (fold_left_combine gen_set assoc_mid_gen y_gs);
-  try assumption.
-  
-  rewrite (fold_left_combine gen_set assoc_mid_gen x_gs (y_gs ++ z_g :: z_gs) x_g);
-  try assumption.
+  rewrite (fold_left_combine gen_set assoc_mid_gen y_gs z_gs y_g z_g y_gs_in z_gs_in z_g_in).
+  rewrite (fold_left_combine gen_set assoc_mid_gen x_gs (y_gs ++ z_g :: z_gs) x_g y_g x_gs_in).
   
   - reflexivity.
   - apply Forall_app.
@@ -121,6 +114,7 @@ Proof.
     + constructor.
       * exact z_g_in.
       * exact z_gs_in.
+  - apply y_g_in.
 Qed.
 
 Theorem associative_if_associative_with_middle_generators {A : Type} `{Magma A} (gen_set : list A) :
@@ -141,12 +135,10 @@ Proof.
   rewrite x_eq, y_eq, z_eq.
   
   (* Apply the three-part fold lemma to handle left hand side *)
-  rewrite (fold_left_three_part_LHS gen_set assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs);
-  try assumption.
+  rewrite (fold_left_three_part_LHS gen_set assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs y_g_in_gen_set z_g_in_gen_set x_gs_in_gen_set y_gs_in_gen_set z_gs_in_gen_set).
   
   (* Apply the three-part fold lemma to handle right hand side *)
-  rewrite (fold_left_three_part_RHS gen_set assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs);
-  try assumption.
+  rewrite (fold_left_three_part_RHS gen_set assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs y_g_in_gen_set z_g_in_gen_set x_gs_in_gen_set y_gs_in_gen_set z_gs_in_gen_set).
   
   (* Now both sides are equal by reflexivity *)
   reflexivity.
