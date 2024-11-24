@@ -38,6 +38,9 @@ Proof.
     constructor; auto.
 Qed.
 
+(* Require Import Coq.Program.Basics. *)
+Require Import CoqUtilLib.ListFunctions.
+
 Lemma fold_left_combine {A : Type} `{Magma A} (gen_set : list A) :
   forall (assoc_mid_gen : forall g, In g gen_set -> 
            forall x y, m_op (m_op x g) y = m_op x (m_op g y))
@@ -51,9 +54,23 @@ Proof.
   intros assoc_mid_gen l1 l2 x g H1 H2 Hg.
   revert x. induction l1 as [| h t IH]; intros x; simpl.
   - (* Base case: l1 is empty *)
-    induction l2.
+    replace l2 with (rev (rev l2)) by apply rev_involutive.
+    induction (rev l2).
     + reflexivity.
     + (* Switch to using fold_right so this part becomes easy. *)
+      rewrite cons_append.
+      rewrite distr_rev.
+      rewrite fold_left_app.
+      rewrite fold_left_app.
+      rewrite <- IHl. clear IHl.
+      simpl.
+      (*
+        GOAL:
+            m_op x (m_op (fold_left m_op (rev l) g) a)
+          = m_op (m_op x (fold_left m_op (rev l) g)) a
+      *)
+      
+      (* rewrite fold_left_app_assoc. *)
       admit.
   - (* Inductive step: l1 = h :: t *)
     inversion H1; subst.
