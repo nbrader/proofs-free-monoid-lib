@@ -18,6 +18,8 @@ Definition Qnonzero := { q : Q | ~(q == 0%Q) }.
 (*                 Operation on Qnonzero                   *)
 (* ******************************************************* *)
 
+Locate "==".
+
 Definition one_nonzero : Qnonzero.
 Proof.
   exists (1 # 1).
@@ -51,6 +53,12 @@ Defined.
 Definition one_half_nonzero : Qnonzero.
 Proof.
   exists (1 # 2).
+  discriminate.
+Defined.
+
+Definition two_over_four_nonzero : Qnonzero.
+Proof.
+  exists (2 # 4).
   discriminate.
 Defined.
 
@@ -182,13 +190,32 @@ Proof.
   reflexivity.
 Qed.
 
-Axiom Qeq_to_eq : forall x y : Qnonzero, x == y -> x = y.
+Axiom Qnonzeroeq_to_eq : forall x y : Qnonzero, get_rational x == get_rational y -> x = y.
+
+(* Start the contradiction proof *)
+Theorem Qeq_to_eq_implies_false : False.
+Proof.
+  (* Construct two rationals that are Qeq-equivalent but not propositionally equal *)
+  assert (H1 : get_rational one_half_nonzero == get_rational two_over_four_nonzero).
+  { (* This follows from the definition of Qeq in QArith *)
+    simpl.
+    ring.
+  }
+  
+  (* Use the axiom to try to prove these are propositionally equal *)
+  pose proof (Qnonzeroeq_to_eq one_half_nonzero two_over_four_nonzero H1) as H2.
+  
+  (* This will create a proof obligation that x = y, but 1#2 and 2#4 are 
+     syntactically different representations *)
+  discriminate H2.
+Qed.
+
 
 Lemma q1c_op_assoc_eq : forall x y z : Qnonzero, m_op x (m_op y z) = m_op (m_op x y) z.
 Proof.
   intros a b c.
   pose proof (q1c_op_assoc a b c).
-  apply Qeq_to_eq in H.
+  apply Qnonzeroeq_to_eq in H.
   apply H.
 Qed.
 
@@ -235,7 +262,7 @@ Lemma q1c_op_left_id_eq : forall x : Qnonzero, m_op Q1c_id x = x.
 Proof.
   intros a.
   pose proof (q1c_op_left_id a).
-  apply Qeq_to_eq in H.
+  apply Qnonzeroeq_to_eq in H.
   apply H.
 Qed.
 
@@ -243,7 +270,7 @@ Lemma q1c_op_right_id_eq : forall x : Qnonzero, m_op x Q1c_id = x.
 Proof.
   intros a.
   pose proof (q1c_op_right_id a).
-  apply Qeq_to_eq in H.
+  apply Qnonzeroeq_to_eq in H.
   apply H.
 Qed.
 
@@ -304,7 +331,7 @@ Lemma q1c_op_g_inv_left_eq :
 Proof.
   intros x.
   pose proof (q1c_op_g_inv_left x).
-  apply Qeq_to_eq in H.
+  apply Qnonzeroeq_to_eq in H.
   apply H.
 Qed.
 
