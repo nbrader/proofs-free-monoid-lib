@@ -187,7 +187,7 @@ Qed.
 Axiom Qnonzeroeq_to_eq : forall x y : Qnonzero, get_rational x == get_rational y -> x = y.
 
 (* Start the contradiction proof *)
-Theorem Qeq_to_eq_implies_false : False.
+Theorem Qnonzeroeq_to_eq_implies_false : False.
 Proof.
   (* Construct two rationals that are Qeq-equivalent but not propositionally equal *)
   assert (H1 : get_rational one_half_nonzero == get_rational two_over_four_nonzero).
@@ -203,7 +203,6 @@ Proof.
      syntactically different representations *)
   discriminate H2.
 Qed.
-
 
 Lemma q1c_op_assoc_eq : forall x y z : Qnonzero, m_op x (m_op y z) = m_op (m_op x y) z.
 Proof.
