@@ -18,8 +18,6 @@ Definition Qnonzero := { q : Q | ~(q == 0%Q) }.
 (*                 Operation on Qnonzero                   *)
 (* ******************************************************* *)
 
-Locate "==".
-
 Definition one_nonzero : Qnonzero.
 Proof.
   exists (1 # 1).
@@ -67,11 +65,7 @@ Ltac nonzero :=
 
 Definition get_rational (q : Qnonzero) : Q := proj1_sig q.
 
-Compute get_rational one_half_nonzero. (* Outputs: 1/2 *)
-
 Coercion get_rational : Qnonzero >-> Q.
-
-Compute one_half_nonzero + (1 # 3). (* Uses the coercion to add a Qnonzero and a Q *)
 
 Definition Qnonzero_mult (a b : Qnonzero) : Qnonzero.
 Proof.
