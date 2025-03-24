@@ -49,7 +49,7 @@ Definition extend {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : F
   fold_right (fun b acc => m_op (f b) acc) mn_id.
 
 (* Proof that extend f is a monoid homomorphism *)
-Lemma extend_mor {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : MonoidHomomorphism FreeMonoid_Monoid _ (extend mb f).
+Lemma extend_mor {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : MonoidHomomorphism FreeMonoid_Monoid mb (extend mb f).
 Proof.
   split.
   - intros x y. unfold extend.
@@ -68,7 +68,7 @@ Qed.
 
 (* Proof that extend is the unique such extension *)
 Lemma extend_unique {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) (g : FreeMonoid -> B)
-  (gHom : MonoidHomomorphism FreeMonoid_Monoid _ g) :
+  (gHom : MonoidHomomorphism FreeMonoid_Monoid mb g) :
   (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend mb f y.
 Proof.
   unfold extend.
