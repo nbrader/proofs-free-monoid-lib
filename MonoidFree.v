@@ -51,7 +51,7 @@ Definition extend (f : Basis -> A) : FreeMonoid -> A :=
   fold_right (fun b acc => m_op (f b) acc) mn_id.
 
 (* Proof that extend f is a monoid homomorphism *)
-Lemma extend_mor (f : Basis -> A) : MonoidHomomorphism (extend f).
+Lemma extend_mor (f : Basis -> A) : MonoidHomomorphism FreeMonoid_Monoid _ (extend f).
 Proof.
   split.
   - intros x y. unfold extend.
@@ -70,7 +70,7 @@ Qed.
 
 (* Proof that extend is the unique such extension *)
 Lemma extend_unique (f : Basis -> A) (g : FreeMonoid -> A)
-  (gHom : MonoidHomomorphism g) :
+  (gHom : MonoidHomomorphism FreeMonoid_Monoid _ g) :
   (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend f y.
 Proof.
   unfold extend.

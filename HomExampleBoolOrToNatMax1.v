@@ -11,7 +11,7 @@ Definition bool_to_nat (b : bool) : nat :=
   | true => 1
   end.
 
-Instance BoolToNatHomomorphism : MonoidHomomorphism bool_to_nat.
+Instance BoolToNatHomomorphism : MonoidHomomorphism BoolOrMonoid NatMax1Monoid bool_to_nat.
 Proof.
   split.
   - intros x y.
