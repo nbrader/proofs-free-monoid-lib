@@ -33,8 +33,6 @@ Definition canonical_inj (b : Basis) : FreeMonoid := [b].
 (* Universal property definitions *)
 Section UniversalProperty.
 
-Context {B : Type} `{Monoid B}.
-
 (*
         (Set)               (Mon)
 
@@ -47,11 +45,11 @@ Context {B : Type} `{Monoid B}.
     Please note: The forgetful functor U is left implicit in the code below. *)
 
 (* Extends a function f : Basis -> A to a function FreeMonoid -> A *)
-Definition extend (f : Basis -> B) : FreeMonoid -> B :=
+Definition extend {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : FreeMonoid -> B :=
   fold_right (fun b acc => m_op (f b) acc) mn_id.
 
 (* Proof that extend f is a monoid homomorphism *)
-Lemma extend_mor (f : Basis -> B) : MonoidHomomorphism FreeMonoid_Monoid _ (extend f).
+Lemma extend_mor {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : MonoidHomomorphism FreeMonoid_Monoid _ (extend mb f).
 Proof.
   split.
   - intros x y. unfold extend.
@@ -61,17 +59,17 @@ Proof.
   - simpl. reflexivity.
 Qed.
 
-Lemma extend_universal (f : Basis -> B) (x : Basis) :
-  extend f (canonical_inj x) = f x.
+Lemma extend_universal {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) (x : Basis) :
+  extend mb f (canonical_inj x) = f x.
 Proof.
   unfold extend, canonical_inj. simpl.
   rewrite mn_right_id. reflexivity.
 Qed.
 
 (* Proof that extend is the unique such extension *)
-Lemma extend_unique (f : Basis -> B) (g : FreeMonoid -> B)
+Lemma extend_unique {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) (g : FreeMonoid -> B)
   (gHom : MonoidHomomorphism FreeMonoid_Monoid _ g) :
-  (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend f y.
+  (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend mb f y.
 Proof.
   unfold extend.
   intros.
@@ -86,8 +84,8 @@ Proof.
     exact H_mn_id.
   - (* Inductive step for non-empty lists *)
     simpl.
-    specialize (H2 b).  (* Utilize the fact that g (canonical_inj b) = f b *)
-    rewrite <- H2.
+    specialize (H1 b).  (* Utilize the fact that g (canonical_inj b) = f b *)
+    rewrite <- H1.
     assert (H_cons: g (b :: bs) = m_op (g [b]) (g bs)).
     {
       destruct gHom.
