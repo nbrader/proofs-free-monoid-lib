@@ -8,8 +8,8 @@ Module Type BasisType.
   Parameter Basis : Type.
 End BasisType.
 
-Module FreeMonoidModule (B : BasisType).
-Definition Basis := B.Basis.
+Module FreeMonoidModule (X : BasisType).
+Definition Basis := X.Basis.
 
 (* The type of lists over the Basis, representing the free monoid on Basis *)
 Definition FreeMonoid := list Basis.
@@ -33,7 +33,7 @@ Definition canonical_inj (b : Basis) : FreeMonoid := [b].
 (* Universal property definitions *)
 Section UniversalProperty.
 
-Context {A : Type} `{Monoid A}.
+Context {B : Type} `{Monoid B}.
 
 (*
         (Set)               (Mon)
@@ -47,11 +47,11 @@ Context {A : Type} `{Monoid A}.
     Please note: The forgetful functor U is left implicit in the code below. *)
 
 (* Extends a function f : Basis -> A to a function FreeMonoid -> A *)
-Definition extend (f : Basis -> A) : FreeMonoid -> A :=
+Definition extend (f : Basis -> B) : FreeMonoid -> B :=
   fold_right (fun b acc => m_op (f b) acc) mn_id.
 
 (* Proof that extend f is a monoid homomorphism *)
-Lemma extend_mor (f : Basis -> A) : MonoidHomomorphism FreeMonoid_Monoid _ (extend f).
+Lemma extend_mor (f : Basis -> B) : MonoidHomomorphism FreeMonoid_Monoid _ (extend f).
 Proof.
   split.
   - intros x y. unfold extend.
@@ -61,7 +61,7 @@ Proof.
   - simpl. reflexivity.
 Qed.
 
-Lemma extend_universal (f : Basis -> A) (x : Basis) :
+Lemma extend_universal (f : Basis -> B) (x : Basis) :
   extend f (canonical_inj x) = f x.
 Proof.
   unfold extend, canonical_inj. simpl.
@@ -69,7 +69,7 @@ Proof.
 Qed.
 
 (* Proof that extend is the unique such extension *)
-Lemma extend_unique (f : Basis -> A) (g : FreeMonoid -> A)
+Lemma extend_unique (f : Basis -> B) (g : FreeMonoid -> B)
   (gHom : MonoidHomomorphism FreeMonoid_Monoid _ g) :
   (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend f y.
 Proof.
