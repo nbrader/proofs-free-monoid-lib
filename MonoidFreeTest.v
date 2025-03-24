@@ -27,7 +27,7 @@ Module NatFreeMonoid := FreeMonoidModule NatBasis.
 
 (* Define a proposition that asserts something about lifted_function *)
 Theorem lifted_function_correct : forall x y z : nat,
-  (@NatFreeMonoid.extend _ _ _ _ NatFreeMonoid.FreeMonoid_UniversalProperty (fun b => 2*b)) [x; y; z] = 2*x + 2*y + 2*z.
+  NatFreeMonoid.extend (fun (b : nat) => 2 * b) [x; y; z] = 2 * x + 2 * y + 2 * z.
 Proof.
   intros x y z.
   unfold NatFreeMonoid.extend.
@@ -36,4 +36,4 @@ Proof.
   ring.
 Qed.
 
-(* Compute (@NatFreeMonoid.extend _ _ _ _ NatFreeMonoid.FreeMonoid_UniversalProperty (fun b => 2*b)) [0; 1; 2]. *)
+(* Compute (NatFreeMonoid.extend nat_Monoid (fun b => 2*b) [0; 1; 2]). *)
