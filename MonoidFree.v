@@ -38,44 +38,44 @@ Section UniversalProperty.
 
       i
     X ⟶ U(A)                A
-      ↘   ↓ U(extend f)      ↓ extend f
+      ↘   ↓ U(foldMap f)     ↓ foldMap f
      f   U(B)                B
     
     
     Please note: The forgetful functor U is left implicit in the code below. *)
 
-(* Extends a function f : Basis -> A to a function FreeMonoid -> A *)
-Definition extend {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : FreeMonoid -> B :=
+(* foldMap extends a function f : Basis -> A to a function FreeMonoid -> A *)
+Definition foldMap {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : FreeMonoid -> B :=
   fold_right (fun b acc => m_op (f b) acc) mn_id.
 
-(* Proof that extend f is a monoid homomorphism *)
-Lemma extend_mor {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : MonoidHomomorphism FreeMonoid_Monoid mb (extend mb f).
+(* Proof that foldMap f is a monoid homomorphism *)
+Lemma foldMap_mor {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : MonoidHomomorphism FreeMonoid_Monoid mb (foldMap mb f).
 Proof.
   split.
-  - intros x y. unfold extend.
+  - intros x y. unfold foldMap.
     induction x as [|b bs IH].
     + simpl. rewrite mn_left_id. reflexivity.
     + simpl in *. rewrite <- sg_assoc. f_equal. apply IH.
   - simpl. reflexivity.
 Qed.
 
-Lemma extend_universal {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) (x : Basis) :
-  extend mb f (canonical_inj x) = f x.
+Lemma foldMap_universal {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) (x : Basis) :
+  foldMap mb f (canonical_inj x) = f x.
 Proof.
-  unfold extend, canonical_inj. simpl.
+  unfold foldMap, canonical_inj. simpl.
   rewrite mn_right_id. reflexivity.
 Qed.
 
-(* Proof that extend is the unique such extension *)
-Lemma extend_unique {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) (g : FreeMonoid -> B)
+(* Proof that foldMap is unique *)
+Lemma foldMap_unique {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) (g : FreeMonoid -> B)
   (gHom : MonoidHomomorphism FreeMonoid_Monoid mb g) :
-  (forall x, g (canonical_inj x) = f x) -> forall y, g y = extend mb f y.
+  (forall x, g (canonical_inj x) = f x) -> forall y, g y = foldMap mb f y.
 Proof.
-  unfold extend.
+  unfold foldMap.
   intros.
   induction y as [|b bs IHbs].
   - (* Base case for the empty list *)
-    unfold extend. simpl.
+    unfold foldMap. simpl.
     assert (H_mn_id: g [] = mn_id).
     { 
       destruct gHom.

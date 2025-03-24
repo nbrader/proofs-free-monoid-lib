@@ -27,10 +27,10 @@ Module NatFreeMonoid := FreeMonoidModule NatBasis.
 
 (* Define a proposition that asserts something about lifted_function *)
 Theorem lifted_function_correct : forall x y z : nat,
-  NatFreeMonoid.extend nat_Monoid (fun (b : nat) => 2 * b) [x; y; z] = 2 * x + 2 * y + 2 * z.
+  NatFreeMonoid.foldMap nat_Monoid (fun (b : nat) => 2 * b) [x; y; z] = 2 * x + 2 * y + 2 * z.
 Proof.
   intros x y z.
-  unfold NatFreeMonoid.extend.
+  unfold NatFreeMonoid.foldMap.
   simpl.
   rewrite !Nat.add_assoc.  (* Use associativity of addition to simplify the nested additions *)
   ring.
