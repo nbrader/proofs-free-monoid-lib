@@ -42,9 +42,9 @@ Section UniversalProperty.
      f   U(B)                B
     
     
-    Please note: The forgetful functor U is left implicit in the code below. *)
+    Please note: The forgetful functor U is left implicit and X is called "Basis" in the code below. *)
 
-(* foldMap extends a function f : Basis -> A to a function FreeMonoid -> A *)
+(* For any monoid B, foldMap extends a function f : A -> B to a monoid homomorphism [A] -> B *)
 Definition foldMap {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : FreeMonoid -> B :=
   fold_right (fun b acc => m_op (f b) acc) mn_id.
 
