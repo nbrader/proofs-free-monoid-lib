@@ -4,6 +4,9 @@ Require Import FreeMonoid.StructMonoid. Export FreeMonoid.StructSemigroup.
 Require Import FreeMonoid.MonoidHom.
 Require Import Coq.Arith.Mult.
 
+Require Import Coq.Program.Basics.
+Require Import Coq.Program.Combinators.
+
 Module Type BasisType.
   Parameter Basis : Type.
 End BasisType.
@@ -46,7 +49,7 @@ Section UniversalProperty.
 
 (* For any monoid B, foldMap extends a function f : A -> B to a monoid homomorphism [A] -> B *)
 Definition foldMap {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : FreeMonoid -> B :=
-  fold_right (fun b acc => m_op (f b) acc) mn_id.
+  fold_right m_op mn_id ∘ map f.
 
 (* Proof that foldMap f is a monoid homomorphism *)
 Lemma foldMap_mor {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> B) : MonoidHomomorphism FreeMonoid_Monoid mb (foldMap mb f).
@@ -54,8 +57,8 @@ Proof.
   split.
   - intros x y. unfold foldMap.
     induction x as [|b bs IH].
-    + simpl. rewrite mn_left_id. reflexivity.
-    + simpl in *. rewrite <- sg_assoc. f_equal. apply IH.
+    + simpl. unfold compose. simpl. rewrite mn_left_id. reflexivity.
+    + simpl in *. unfold compose. simpl. rewrite <- sg_assoc. f_equal. apply IH.
   - simpl. reflexivity.
 Qed.
 
@@ -63,7 +66,7 @@ Lemma foldMap_universal {B : Type} `{Semigroup B} (mb : Monoid B) (f : Basis -> 
   foldMap mb f (canonical_inj x) = f x.
 Proof.
   unfold foldMap, canonical_inj. simpl.
-  rewrite mn_right_id. reflexivity.
+  unfold compose. simpl. rewrite mn_right_id. reflexivity.
 Qed.
 
 (* Proof that foldMap is unique *)
@@ -85,7 +88,7 @@ Proof.
   - (* Inductive step for non-empty lists *)
     simpl.
     specialize (H1 b).  (* Utilize the fact that g (canonical_inj b) = f b *)
-    rewrite <- H1.
+    unfold compose. simpl. rewrite <- H1.
     assert (H_cons: g (b :: bs) = m_op (g [b]) (g bs)).
     {
       destruct gHom.
