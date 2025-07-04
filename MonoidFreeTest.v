@@ -33,6 +33,8 @@ Proof.
   unfold NatFreeMonoid.foldMap.
   simpl.
   rewrite !Nat.add_assoc.  (* Use associativity of addition to simplify the nested additions *)
+  unfold Basics.compose.
+  simpl.
   ring.
 Qed.
 
