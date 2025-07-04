@@ -38,4 +38,4 @@ Proof.
   ring.
 Qed.
 
-(* Compute (NatFreeMonoid.extend nat_Monoid (fun b => 2*b) [0; 1; 2]). *)
+(* Compute (NatFreeMonoid.foldMap nat_Monoid (fun b => 2*b) [0; 1; 2]). *)
