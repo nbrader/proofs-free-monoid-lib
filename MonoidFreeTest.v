@@ -4,6 +4,7 @@ Require Import Coq.Arith.Plus.
 Require Import Coq.Lists.List.
 Import ListNotations.
 Require Import ArithRing Ring.
+Require Import MonoidConcat.
 
 Instance nat_Magma : Magma nat := {
   m_op := plus
@@ -33,9 +34,13 @@ Proof.
   unfold NatFreeMonoid.foldMap.
   simpl.
   rewrite !Nat.add_assoc.  (* Use associativity of addition to simplify the nested additions *)
-  unfold Basics.compose.
-  simpl.
   ring.
+Qed.
+
+Theorem example2 : forall (A : Type), forall (A_magma : Magma A), forall (A_semigroup : Semigroup A), forall (A_monoid : Monoid A), forall P : (nat -> A),
+  NatFreeMonoid.foldMap A_monoid P [3; 2; 1; 0] = mconcat A P 4.
+Proof.
+  reflexivity.
 Qed.
 
 (* Compute (NatFreeMonoid.foldMap nat_Monoid (fun b => 2*b) [0; 1; 2]). *)
