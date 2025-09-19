@@ -42,26 +42,39 @@ Qed.
 Require Import CoqUtilLib.ListFunctions.
 
 Lemma fold_left_combine {A : Type} `{Magma A} (gen_set : list A) :
-  forall (assoc_mid_gen : forall g, In g gen_set -> 
+  forall (assoc_mid_gen : forall g, In g gen_set ->
            forall x y, m_op (m_op x g) y = m_op x (m_op g y))
+         (closure_gen : forall a b, In a gen_set -> In b gen_set -> In (m_op a b) gen_set)
          (l1 l2 : list A) (x g : A),
+  In x gen_set ->
   Forall (fun x => In x gen_set) l1 ->
   Forall (fun x => In x gen_set) l2 ->
   In g gen_set ->
-  m_op (fold_left m_op l1 x) (fold_left m_op l2 g) = 
+  m_op (fold_left m_op l1 x) (fold_left m_op l2 g) =
   fold_left m_op (l1 ++ g :: l2) x.
 Proof.
-  intros assoc_mid_gen l1 l2 x g H1 H2 Hg.
-  admit.
-  (* fold_left_combine_middle_assoc *)
-Admitted.
+  intros assoc_mid_gen closure_gen l1 l2 x g Hx H1 H2 Hg.
+
+  (* Convert the middle associativity for gen_set to the general form *)
+  assert (middle_assoc_gen: middle_assoc (fun a => In a gen_set) m_op). {
+    unfold middle_assoc.
+    intros a m b Ha.
+    apply assoc_mid_gen; auto.
+  }
+
+  (* Now we have the closure assumption as a parameter, so we can proceed *)
+  (* Apply the existing fold_left_combine_middle_assoc lemma *)
+  apply fold_left_combine_middle_assoc with (P := fun a => In a gen_set); auto.
+Qed.
 
 Lemma fold_left_three_part_LHS {A : Type} `{Magma A} (gen_set : list A) :
-  forall (assoc_mid_gen : forall g, In g gen_set -> 
+  forall (assoc_mid_gen : forall g, In g gen_set ->
            forall x y, m_op (m_op x g) y = m_op x (m_op g y))
-         (x_g : A) (x_gs : list A) 
+         (closure_gen : forall a b, In a gen_set -> In b gen_set -> In (m_op a b) gen_set)
+         (x_g : A) (x_gs : list A)
          (y_g : A) (y_gs : list A)
          (z_g : A) (z_gs : list A),
+  In x_g gen_set ->
   In y_g gen_set ->
   In z_g gen_set ->
   Forall (fun x => In x gen_set) x_gs ->
@@ -70,28 +83,31 @@ Lemma fold_left_three_part_LHS {A : Type} `{Magma A} (gen_set : list A) :
   m_op (m_op (fold_left m_op x_gs x_g) (fold_left m_op y_gs y_g)) (fold_left m_op z_gs z_g) =
   fold_left m_op (x_gs ++ y_g :: y_gs ++ z_g :: z_gs) x_g.
 Proof.
-  intros assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs
-         y_g_in z_g_in x_gs_in y_gs_in z_gs_in.
-  
-  rewrite (fold_left_combine gen_set assoc_mid_gen x_gs y_gs x_g y_g x_gs_in y_gs_in y_g_in).
-  rewrite (fold_left_combine gen_set assoc_mid_gen (x_gs ++ y_g :: y_gs) z_gs x_g z_g).
-  
+  intros assoc_mid_gen closure_gen x_g x_gs y_g y_gs z_g z_gs
+         x_g_in y_g_in z_g_in x_gs_in y_gs_in z_gs_in.
+
+  rewrite (fold_left_combine gen_set assoc_mid_gen closure_gen x_gs y_gs x_g y_g x_g_in x_gs_in y_gs_in y_g_in).
+  rewrite (fold_left_combine gen_set assoc_mid_gen closure_gen (x_gs ++ y_g :: y_gs) z_gs x_g z_g).
+
   - rewrite <- app_assoc. reflexivity.
+  - exact x_g_in.
   - apply Forall_app.
     + exact x_gs_in.
     + constructor.
       * exact y_g_in.
       * exact y_gs_in.
-  - apply z_gs_in.
-  - apply z_g_in.
+  - exact z_gs_in.
+  - exact z_g_in.
 Qed.
 
 Lemma fold_left_three_part_RHS {A : Type} `{Magma A} (gen_set : list A) :
-  forall (assoc_mid_gen : forall g, In g gen_set -> 
+  forall (assoc_mid_gen : forall g, In g gen_set ->
            forall x y, m_op (m_op x g) y = m_op x (m_op g y))
-         (x_g : A) (x_gs : list A) 
+         (closure_gen : forall a b, In a gen_set -> In b gen_set -> In (m_op a b) gen_set)
+         (x_g : A) (x_gs : list A)
          (y_g : A) (y_gs : list A)
          (z_g : A) (z_gs : list A),
+  In x_g gen_set ->
   In y_g gen_set ->
   In z_g gen_set ->
   Forall (fun x => In x gen_set) x_gs ->
@@ -100,29 +116,30 @@ Lemma fold_left_three_part_RHS {A : Type} `{Magma A} (gen_set : list A) :
   m_op (fold_left m_op x_gs x_g) (m_op (fold_left m_op y_gs y_g) (fold_left m_op z_gs z_g)) =
   fold_left m_op (x_gs ++ y_g :: y_gs ++ z_g :: z_gs) x_g.
 Proof.
-  intros assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs
-         y_g_in z_g_in x_gs_in y_gs_in z_gs_in.
-  
-  rewrite (fold_left_combine gen_set assoc_mid_gen y_gs z_gs y_g z_g y_gs_in z_gs_in z_g_in).
-  rewrite (fold_left_combine gen_set assoc_mid_gen x_gs (y_gs ++ z_g :: z_gs) x_g y_g x_gs_in).
-  
+  intros assoc_mid_gen closure_gen x_g x_gs y_g y_gs z_g z_gs
+         x_g_in y_g_in z_g_in x_gs_in y_gs_in z_gs_in.
+
+  rewrite (fold_left_combine gen_set assoc_mid_gen closure_gen y_gs z_gs y_g z_g y_g_in y_gs_in z_gs_in z_g_in).
+  rewrite (fold_left_combine gen_set assoc_mid_gen closure_gen x_gs (y_gs ++ z_g :: z_gs) x_g y_g x_g_in x_gs_in).
+
   - reflexivity.
   - apply Forall_app.
     + exact y_gs_in.
     + constructor.
       * exact z_g_in.
       * exact z_gs_in.
-  - apply y_g_in.
+  - exact y_g_in.
 Qed.
 
 Theorem associative_if_associative_with_middle_generators {A : Type} `{Magma A} (gen_set : list A) :
   forall (gen_set_proof : is_generating_set gen_set),
   forall (assoc_mid_gen :
             forall (g : A), (In g gen_set) ->
-            forall (x y : A), m_op (m_op x g) y = m_op x (m_op g y)),
+            forall (x y : A), m_op (m_op x g) y = m_op x (m_op g y))
+         (closure_gen : forall a b, In a gen_set -> In b gen_set -> In (m_op a b) gen_set),
   forall (x y z : A), m_op (m_op x y) z = m_op x (m_op y z).
 Proof.
-  intros gen_set_proof assoc_mid_gen x y z.
+  intros gen_set_proof assoc_mid_gen closure_gen x y z.
   
   (* Extract generator information for x, y, and z *)
   destruct (extract_gen_info gen_set x gen_set_proof) as [x_g [x_gs [x_g_in_gen_set [x_gs_in_gen_set x_eq]]]].
@@ -133,10 +150,10 @@ Proof.
   rewrite x_eq, y_eq, z_eq.
   
   (* Apply the three-part fold lemma to handle left hand side *)
-  rewrite (fold_left_three_part_LHS gen_set assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs y_g_in_gen_set z_g_in_gen_set x_gs_in_gen_set y_gs_in_gen_set z_gs_in_gen_set).
-  
+  rewrite (fold_left_three_part_LHS gen_set assoc_mid_gen closure_gen x_g x_gs y_g y_gs z_g z_gs x_g_in_gen_set y_g_in_gen_set z_g_in_gen_set x_gs_in_gen_set y_gs_in_gen_set z_gs_in_gen_set).
+
   (* Apply the three-part fold lemma to handle right hand side *)
-  rewrite (fold_left_three_part_RHS gen_set assoc_mid_gen x_g x_gs y_g y_gs z_g z_gs y_g_in_gen_set z_g_in_gen_set x_gs_in_gen_set y_gs_in_gen_set z_gs_in_gen_set).
+  rewrite (fold_left_three_part_RHS gen_set assoc_mid_gen closure_gen x_g x_gs y_g y_gs z_g z_gs x_g_in_gen_set y_g_in_gen_set z_g_in_gen_set x_gs_in_gen_set y_gs_in_gen_set z_gs_in_gen_set).
   
   (* Now both sides are equal by reflexivity *)
   reflexivity.
