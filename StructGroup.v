@@ -60,7 +60,7 @@ Proof.
   reflexivity.
 Qed.
 
-Theorem inv_unique_2 (A : Type) `{Group A} (x y : A) (x_y_inverses : m_op x y = mn_id) : x = g_inv y.
+Theorem inv_unique_1 (A : Type) `{Group A} (x y : A) (x_y_inverses : m_op x y = mn_id) : x = g_inv y.
 Proof.
   (* Use the fact that in a group, if x * y = e, then x = y^(-1) *)
   (* Start with x = x * e *)
@@ -77,14 +77,14 @@ Proof.
   reflexivity.
 Qed.
 
-Theorem inv_unique (A : Type) `{Group A} (f : A -> A) (f_inv : is_left_inv A m_op mn_id f) : f = g_inv.
+Theorem inv_unique_2 (A : Type) `{Group A} (f : A -> A) (f_inv : is_left_inv A m_op mn_id f) : f = g_inv.
 Proof.
   (* Prove functional extensionality: f x = g_inv x for all x *)
   apply functional_extensionality.
   intro x.
   (* For any x, we need to show f x = g_inv x *)
-  (* From is_left_inv, we have f(x) * x = e, so by inv_unique_2: f(x) = g_inv x *)
-  apply inv_unique_2.
+  (* From is_left_inv, we have f(x) * x = e, so by inv_unique_1: f(x) = g_inv x *)
+  apply inv_unique_1.
   (* Apply the hypothesis that f is a left inverse: m_op (f x) x = mn_id *)
   exact (f_inv x).
 Qed.
