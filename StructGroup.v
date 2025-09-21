@@ -59,29 +59,33 @@ Proof.
   reflexivity.
 Qed.
 
-(* 
 Theorem inv_unique (A : Type) `{Group A} (f : A -> A) (f_inv : is_left_inv A m_op mn_id f) : f = g_inv.
 Proof.
-  admit.
-  (* unfold is_id in *.
-  destruct x_id.
-  specialize (H4 mn_id).
-  rewrite mn_left_id in H4.
-  apply H4. *)
-Admitted.
-*)
+  (* Prove functional extensionality: f x = g_inv x for all x *)
+  apply functional_extensionality.
+  intro x.
+  (* For any x, we need to show f x = g_inv x *)
+  (* Use the fact that if f(x) * x = e, then f(x) = x^(-1) *)
+  apply inv_unique_2.
+  (* Apply the hypothesis that f is a left inverse *)
+  exact (f_inv x).
+Qed.
 
-(* 
 Theorem inv_unique_2 (A : Type) `{Group A} (x y : A) (x_y_inverses : m_op x y = mn_id) : y = g_inv x.
 Proof.
-  admit.
-  (* unfold is_id in *.
-  destruct x_id.
-  specialize (H4 mn_id).
-  rewrite mn_left_id in H4.
-  apply H4. *)
-Admitted.
-*)
+  (* Use the fact that in a group, if x * y = e, then y = x^(-1) *)
+  (* Start with y = e * y *)
+  rewrite <- mn_left_id.
+  (* Replace e with (x^(-1) * x) *)
+  rewrite <- g_inv_left.
+  (* Use associativity: e * y = (x^(-1) * x) * y = x^(-1) * (x * y) *)
+  rewrite sg_assoc.
+  (* Use the hypothesis x * y = e *)
+  rewrite x_y_inverses.
+  (* Simplify x^(-1) * e = x^(-1) *)
+  rewrite mn_right_id.
+  reflexivity.
+Qed.
 
 Theorem inv_unique_3 (A : Type) `{Group A} (x y : A) (x_y_inverses : m_op x y = mn_id) : x = g_inv y.
 Proof.
