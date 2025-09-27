@@ -190,21 +190,12 @@ Proof.
   - rewrite Z.add_max_distr_l. reflexivity.
 Qed.
 
-Lemma Z_add_max_distr_r : forall n m p : Z, Z.max n m + p = Z.max (n + p) (m + p).
-Proof.
-  intros n m p.
-  rewrite Z.add_comm.
-  rewrite Z.add_comm with (n := n).
-  rewrite Z.add_comm with (n := m).
-  symmetry. apply Z.add_max_distr_l.
-Qed.
-
 Lemma tropical_distr_r : forall x y z : ExtZ,
   tropical_mul (tropical_add x y) z = tropical_add (tropical_mul x z) (tropical_mul y z).
 Proof.
   intros x y z.
   destruct x, y, z; simpl; try reflexivity.
-  - f_equal. apply Z_add_max_distr_r.
+  - f_equal. rewrite Z.add_max_distr_r. reflexivity.
 Qed.
 
 Lemma tropical_mul_zero_l : forall x : ExtZ,
