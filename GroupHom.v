@@ -1,6 +1,5 @@
 Require Import FreeMonoid.StructMonoid.
 Require Import FreeMonoid.StructGroup. Export FreeMonoid.StructGroup.
-Require Import Coq.Setoids.Setoid.
 
 Section GroupHomomorphisms.
 
@@ -34,7 +33,7 @@ Proof.
   - (* Show: mn_id = f(mn_id) * inv(f(mn_id)) *)
     symmetry. apply g_inv_right.
   - (* Show: f(mn_id) * inv(f(mn_id)) = f(mn_id) *)
-    rewrite H_eq at 1.
+    pattern (f mn_id) at 1. rewrite H_eq.
     (* Now we have: (f(mn_id) * f(mn_id)) * inv(f(mn_id)) = f(mn_id) *)
     rewrite <- sg_assoc.
     (* Now we have: f(mn_id) * (f(mn_id) * inv(f(mn_id))) = f(mn_id) *)
